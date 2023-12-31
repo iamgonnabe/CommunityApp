@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutterproject/widgets/board_list_widget.dart';
-import 'package:flutterproject/widgets/chatting_widget.dart';
+import 'package:flutterproject/repository/palette.dart';
+import 'package:flutterproject/screens/board_screen.dart';
+import 'package:flutterproject/screens/chatting_screen.dart';
 import 'package:flutterproject/widgets/home_widget.dart';
+import 'package:flutterproject/widgets/login_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,20 +28,23 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xffFF7B00),
+        backgroundColor: Palette.color1,
         actions: [
           IconButton(
               onPressed: () {},
               icon: const Icon(
                 Icons.search,
-                color: Color(0xffFFEA00),
+                color: Palette.color10,
               )),
           IconButton(
               padding: const EdgeInsets.only(right: 35, left: 10),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Login()));
+              },
               icon: const Icon(
                 Icons.account_circle,
-                color: Color(0xffFFEA00),
+                color: Palette.color10,
               )),
         ],
         leading: const Icon(
@@ -55,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: '채팅'),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xffFFEA00),
+        selectedItemColor: Palette.color10,
         onTap: _onItemTapped,
       ),
     );
@@ -63,13 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 }
