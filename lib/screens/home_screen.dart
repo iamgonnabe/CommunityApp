@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/repository/palette.dart';
 import 'package:flutterproject/screens/board_screen.dart';
 import 'package:flutterproject/screens/chatting_screen.dart';
+import 'package:flutterproject/widgets/account_widget.dart';
 import 'package:flutterproject/widgets/home_widget.dart';
 import 'package:flutterproject/widgets/login_widget.dart';
 
@@ -39,8 +41,19 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
               padding: const EdgeInsets.only(right: 35, left: 10),
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Login()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => StreamBuilder(
+                        stream: FirebaseAuth.instance.authStateChanges(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return const Account();
+                          }
+                          return const Login();
+                        },
+                      ),
+                    ));
               },
               icon: const Icon(
                 Icons.account_circle,
