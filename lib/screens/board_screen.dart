@@ -8,28 +8,26 @@ class BoardList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              SizedBox(
-                height: 100,
-              ),
-              GoToBoard(board: 'HOT', boardWidget: HotBoard()),
-              SizedBox(
-                height: 30,
-              ),
-              GoToBoard(board: '자유', boardWidget: FreeBoard()),
-              SizedBox(
-                height: 30,
-              ),
-              GoToBoard(board: '리뷰', boardWidget: ReviewBoard()),
-            ],
-          ),
-        ],
-      ),
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Column(
+          children: [
+            SizedBox(
+              height: 100,
+            ),
+            GoToBoard(board: 'HOT', boardWidget: HotBoard()),
+            SizedBox(
+              height: 30,
+            ),
+            GoToBoard(board: '자유', boardWidget: FreeBoard()),
+            SizedBox(
+              height: 30,
+            ),
+            GoToBoard(board: '리뷰', boardWidget: ReviewBoard()),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -438,12 +438,7 @@ class _LoginState extends State<Login> {
                             );
                             if (!context.mounted) return;
                             if (newUser.user != null) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) {
-                                  return const HomeScreen();
-                                }),
-                              );
+                              Navigator.pop(context);
                               setState(() {
                                 showSpinner = false;
                               });

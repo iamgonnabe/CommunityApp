@@ -5,6 +5,7 @@ import 'package:flutterproject/screens/board_screen.dart';
 import 'package:flutterproject/screens/chatting_screen.dart';
 import 'package:flutterproject/widgets/account_widget.dart';
 import 'package:flutterproject/widgets/home_widget.dart';
+import 'package:flutterproject/widgets/login_alarm_widget.dart';
 import 'package:flutterproject/widgets/login_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,19 +16,36 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final List<Widget> _widgetOptions = <Widget>[
-    const HomePage(),
-    const BoardList(),
-    const Chatting(),
-  ];
+  // final List<Widget> _widgetOptions = <Widget>[
+  //   const HomePage(),
+  //   const BoardList(),
+  //   hasLogin ? const Chatting() : const LoginAlarm(),
+  // ];
+
+  bool hasLogin = false;
+
+  void isLogin() {
+    FirebaseAuth.instance.userChanges().listen((User? user) {
+      setState(() {
+        hasLogin = user != null;
+      });
+    });
+  }
+
   _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    isLogin();
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> widgetOptions = <Widget>[
+      const HomePage(),
+      const BoardList(),
+      hasLogin ? const Chatting() : const LoginAlarm(),
+    ];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Palette.color1,
@@ -36,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {},
               icon: const Icon(
                 Icons.search,
-                color: Palette.color10,
+                color: Colors.white,
               )),
           IconButton(
               padding: const EdgeInsets.only(right: 35, left: 10),
@@ -57,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               icon: const Icon(
                 Icons.account_circle,
-                color: Palette.color10,
+                color: Colors.white,
               )),
         ],
         leading: const Icon(
@@ -65,15 +83,18 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.white,
         ),
       ),
-      body: SafeArea(child: _widgetOptions.elementAt(_selectedIndex)),
+      body: SafeArea(child: widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(icon: Icon(Icons.toc), label: '게시판'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: '채팅'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: '채팅',
+          ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Palette.color10,
+        selectedItemColor: Palette.color1,
         onTap: _onItemTapped,
       ),
     );
