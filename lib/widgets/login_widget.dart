@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterproject/repository/palette.dart';
+import 'package:flutterproject/Board/palette.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutterproject/screens/home_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -18,7 +18,7 @@ class _LoginState extends State<Login> {
   bool isSignup = true;
   bool showSpinner = false;
   final _formkey = GlobalKey<FormState>();
-  String userName = '';
+  static String userName = '';
   String userEmail = '';
   String userPassword = '';
 
@@ -403,6 +403,7 @@ class _LoginState extends State<Login> {
                               'userName': userName,
                               'email': userEmail,
                             });
+                            await newUser.user!.updateDisplayName(userName);
                             if (!context.mounted) return;
                             if (newUser.user != null) {
                               Navigator.push(

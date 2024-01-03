@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterproject/repository/palette.dart';
+import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/screens/home_screen.dart';
 import 'package:flutterproject/widgets/login_widget.dart';
 
@@ -40,7 +40,7 @@ class LoginAlarm extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextButton(
+              ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -57,7 +57,7 @@ class LoginAlarm extends StatelessWidget {
                       color: Colors.red,
                     ),
                   )),
-              TextButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                       context,

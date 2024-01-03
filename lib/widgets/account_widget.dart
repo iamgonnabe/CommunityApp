@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/widgets/login_widget.dart';
 
-import '../repository/palette.dart';
+import '../Board/palette.dart';
 
 class Account extends StatefulWidget {
   const Account({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterproject/repository/palette.dart';
+import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutterproject/firebase_options.dart';

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterproject/repository/palette.dart';
+import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/screens/board_screen.dart';
 import 'package:flutterproject/screens/chatting_screen.dart';
 import 'package:flutterproject/widgets/account_widget.dart';
