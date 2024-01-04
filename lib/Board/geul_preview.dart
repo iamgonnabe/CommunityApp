@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/goto_each_geul.dart';
+import 'package:flutterproject/Board/each_geul_screen.dart';
 import 'package:flutterproject/Board/palette.dart';
 
-class GeulByBoards extends StatelessWidget {
+class GeulPreview extends StatelessWidget {
+  final String board;
   final String title;
   final String content;
   final String userName;
   final String time;
-  const GeulByBoards(
+  final String docId;
+  const GeulPreview(
       {super.key,
+      required this.board,
       required this.title,
       required this.content,
       required this.userName,
-      required this.time});
+      required this.time,
+      required this.docId});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +25,13 @@ class GeulByBoards extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => GotoEachGeul(
+                builder: (context) => EachGeul(
+                      board: board,
                       title: title,
                       content: content,
                       time: time,
                       userName: userName,
+                      docId: docId,
                     )));
       },
       child: Container(

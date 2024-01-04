@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/geul_byBoards.dart';
+import 'package:flutterproject/Board/geul_preview.dart';
 
 class Geul extends StatelessWidget {
   final String board;
@@ -9,7 +9,6 @@ class Geul extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
     return StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection(board)
@@ -23,19 +22,26 @@ class Geul extends StatelessWidget {
             );
           }
           final chatDocs = snapshot.data!.docs;
-          return ListView.builder(
-              itemCount: chatDocs.length,
-              itemBuilder: (context, index) {
-                return GeulByBoards(
-                  title: chatDocs[index]['title'],
-                  content: chatDocs[index]['content'],
-                  userName: chatDocs[index]['userName'],
-                  time: chatDocs[index]['time']
-                      .toDate()
-                      .toString()
-                      .substring(0, 19),
-                );
-              });
+          return ListView.separated(
+            itemCount: chatDocs.length,
+            itemBuilder: (context, index) {
+              var docId = chatDocs[index].id;
+              return GeulPreview(
+                board: board,
+                title: chatDocs[index]['title'],
+                content: chatDocs[index]['content'],
+                userName: chatDocs[index]['userName'],
+                time: chatDocs[index]['time']
+                    .toDate()
+                    .toString()
+                    .substring(0, 19),
+                docId: docId,
+              );
+            },
+            separatorBuilder: (context, index) => const Divider(
+              height: 1,
+            ),
+          );
         });
   }
 }

@@ -24,8 +24,6 @@ class _NewGeulState extends State<NewGeul> {
       'time': Timestamp.now(),
     });
     Navigator.pop(context);
-    print(
-        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${FirebaseFirestore.instance.collection(widget.board).snapshots()}");
   }
 
   void _noContent() {
