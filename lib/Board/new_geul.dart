@@ -22,6 +22,8 @@ class _NewGeulState extends State<NewGeul> {
       'content': _content,
       'userName': user!.displayName,
       'time': Timestamp.now(),
+      'userId': user.uid,
+      'likes': 0,
     });
     Navigator.pop(context);
   }

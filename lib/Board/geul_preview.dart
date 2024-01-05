@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/each_geul_screen.dart';
-import 'package:flutterproject/Board/palette.dart';
 
 class GeulPreview extends StatelessWidget {
   final String board;
@@ -9,14 +8,17 @@ class GeulPreview extends StatelessWidget {
   final String userName;
   final String time;
   final String docId;
-  const GeulPreview(
-      {super.key,
-      required this.board,
-      required this.title,
-      required this.content,
-      required this.userName,
-      required this.time,
-      required this.docId});
+  final String userId;
+  const GeulPreview({
+    super.key,
+    required this.board,
+    required this.title,
+    required this.content,
+    required this.userName,
+    required this.time,
+    required this.docId,
+    required this.userId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class GeulPreview extends StatelessWidget {
                       time: time,
                       userName: userName,
                       docId: docId,
+                      userId: userId,
                     )));
       },
       child: Container(

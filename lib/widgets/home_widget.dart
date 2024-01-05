@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterproject/widgets/boards_preview.widget.dart';
+import 'package:flutterproject/widgets/boards_preview.dart';
+import 'package:flutterproject/widgets/go_to_boards.dart';
 import 'package:flutterproject/widgets/free_board_widget.dart';
 import 'package:flutterproject/widgets/hot_board_widget.dart';
 import 'package:flutterproject/widgets/review_board.widget.dart';
@@ -30,28 +33,35 @@ class HomePage extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            const BoardsPreview(board: 'HOT', boardList: HotBoard()),
+            const GoToBoards(board: 'HOT', boardList: HotBoard()),
             Container(
               color: Colors.grey,
-              width: 200,
+              width: 300,
               height: 150,
             ),
             const SizedBox(
               height: 25,
             ),
-            const BoardsPreview(board: '자유', boardList: FreeBoard()),
+            const GoToBoards(board: '자유', boardList: FreeBoard()),
             Container(
-              color: Colors.grey,
-              width: 200,
+              padding: const EdgeInsets.all(6),
+              width: 300,
               height: 150,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.grey,
+              ),
+              child: const BoardsPreview(
+                board: 'freeBoard',
+              ),
             ),
             const SizedBox(
               height: 25,
             ),
-            const BoardsPreview(board: '리뷰', boardList: ReviewBoard()),
+            const GoToBoards(board: '리뷰', boardList: ReviewBoard()),
             Container(
               color: Colors.grey,
-              width: 200,
+              width: 300,
               height: 150,
             ),
             const SizedBox(

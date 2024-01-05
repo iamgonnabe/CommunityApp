@@ -25,7 +25,7 @@ class _NewCommentState extends State<NewComment> {
         .add({
       'comment': _comment,
       'time': Timestamp.now(),
-      'userId': user!.displayName,
+      'userName': user!.displayName,
     });
     _controller.clear();
     _comment = '';

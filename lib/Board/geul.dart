@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/geul_preview.dart';
 
@@ -36,6 +35,7 @@ class Geul extends StatelessWidget {
                     .toString()
                     .substring(0, 19),
                 docId: docId,
+                userId: chatDocs[index]['userId'],
               );
             },
             separatorBuilder: (context, index) => const Divider(
