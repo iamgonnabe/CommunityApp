@@ -34,11 +34,11 @@ class Comments extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          final chatDocs = snapshot.data!.docs;
+          final commentDocs = snapshot.data!.docs;
           return ListView.builder(
             shrinkWrap: true,
             primary: false,
-            itemCount: chatDocs.length,
+            itemCount: commentDocs.length,
             itemBuilder: (context, index) {
               return Container(
                 padding: const EdgeInsets.all(6),
@@ -49,16 +49,16 @@ class Comments extends StatelessWidget {
                       height: 5,
                     ),
                     Text(
-                      chatDocs[index]['userName'],
+                      commentDocs[index]['userName'],
                     ),
                     const SizedBox(
                       height: 3,
                     ),
                     Text(
-                      chatDocs[index]['comment'],
+                      commentDocs[index]['comment'],
                     ),
                     Text(
-                      chatDocs[index]['time']
+                      commentDocs[index]['time']
                           .toDate()
                           .toString()
                           .substring(5, 16),

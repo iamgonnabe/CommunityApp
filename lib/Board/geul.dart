@@ -20,23 +20,39 @@ class Geul extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          final chatDocs = snapshot.data!.docs;
+          final geulDocs = snapshot.data!.docs;
           return ListView.separated(
-            itemCount: chatDocs.length,
+            itemCount: geulDocs.length,
             itemBuilder: (context, index) {
-              var docId = chatDocs[index].id;
-              return GeulPreview(
-                board: board,
-                title: chatDocs[index]['title'],
-                content: chatDocs[index]['content'],
-                userName: chatDocs[index]['userName'],
-                time: chatDocs[index]['time']
-                    .toDate()
-                    .toString()
-                    .substring(0, 19),
-                docId: docId,
-                userId: chatDocs[index]['userId'],
-              );
+              var docId = geulDocs[index].id;
+              if (board == 'freeBoard') {
+                return GeulPreview(
+                  board: board,
+                  title: geulDocs[index]['title'],
+                  content: geulDocs[index]['content'],
+                  userName: geulDocs[index]['userName'],
+                  time: geulDocs[index]['time']
+                      .toDate()
+                      .toString()
+                      .substring(0, 19),
+                  docId: docId,
+                  userId: geulDocs[index]['userId'],
+                );
+              } else if (board == 'hotBoard') {
+                return GeulPreview(
+                  board: board,
+                  title: geulDocs[index]['title'],
+                  content: geulDocs[index]['content'],
+                  userName: geulDocs[index]['userName'],
+                  time: geulDocs[index]['time']
+                      .toDate()
+                      .toString()
+                      .substring(0, 19),
+                  docId: docId,
+                  userId: 'IdontCare',
+                );
+              }
+              return null;
             },
             separatorBuilder: (context, index) => const Divider(
               height: 1,

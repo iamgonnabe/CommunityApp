@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/comment.dart';
 import 'package:flutterproject/Board/geul_title_and_content.dart';
@@ -28,13 +29,15 @@ class EachGeul extends StatefulWidget {
 }
 
 class _EachGeulState extends State<EachGeul> {
+  final user = FirebaseAuth.instance.currentUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          '자유 게시판',
-          style: TextStyle(
+        title: Text(
+          widget.board == 'freeBoard' ? '자유 게시판' : 'HOT 게시판',
+          style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -48,12 +51,45 @@ class _EachGeulState extends State<EachGeul> {
           color: Colors.white,
           iconSize: 40,
         ),
-        actions: const [
-          Icon(
-            Icons.edit,
-            color: Colors.white,
+        actions: [
+          PopupMenuButton<int>(
+            color: Palette.color2,
+            onSelected: (value) {},
+            offset: const Offset(-10, 52),
+            itemBuilder: (context) {
+              return [
+                const PopupMenuItem(
+                  value: 0,
+                  child: Center(
+                    child: Text(
+                      '채팅하기',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+                if (widget.userId == user?.uid) const PopupMenuDivider(),
+                if (widget.userId == user?.uid)
+                  const PopupMenuItem(
+                    value: 1,
+                    child: Center(
+                      child: Text(
+                        '수정하기',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+              ];
+            },
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
         ],

@@ -1,10 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutterproject/Board/geul.dart';
 
 class HotBoard extends StatelessWidget {
   const HotBoard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('HOT 게시판'),
+      ),
+      body: Stack(
+        children: [
+          Container(
+            child: const Column(children: [
+              SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                  child: Geul(
+                board: 'hotBoard',
+              )),
+            ]),
+          ),
+        ],
+      ),
+    );
   }
 }

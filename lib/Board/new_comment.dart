@@ -27,6 +27,15 @@ class _NewCommentState extends State<NewComment> {
       'time': Timestamp.now(),
       'userName': user!.displayName,
     });
+    final snapshot = await FirebaseFirestore.instance
+        .collection(widget.board)
+        .doc(widget.docId)
+        .get();
+    int commentsCount = await snapshot.get('comments');
+    await FirebaseFirestore.instance
+        .collection(widget.board)
+        .doc(widget.docId)
+        .update({'comments': ++commentsCount});
     _controller.clear();
     _comment = '';
   }

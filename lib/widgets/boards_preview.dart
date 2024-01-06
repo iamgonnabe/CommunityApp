@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterproject/Board/each_geul_screen.dart';
+import 'package:flutterproject/Board/palette.dart';
 
 class BoardsPreview extends StatelessWidget {
   final board;
@@ -10,49 +12,231 @@ class BoardsPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseFirestore.instance
-          .collection(board)
-          .orderBy('time', descending: true)
-          .snapshots(),
-      builder: (context,
-          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-        final chatDocs = snapshot.data!.docs;
-        return ListView.builder(
-            shrinkWrap: true,
-            primary: false,
-            itemCount: chatDocs.length,
-            itemBuilder: (context, index) {
-              if (index < 5) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      chatDocs[index]['title'],
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Divider(
-                      height: 1,
-                      color: Colors.black.withOpacity(0.7),
-                    ),
-                  ],
-                );
-              } else {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      width: 300,
+      height: 250,
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Palette.color3.withOpacity(0.8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 15,
+            spreadRadius: 5,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection(board)
+            .orderBy('time', descending: true)
+            .snapshots(),
+        builder: (context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final geulDocs = snapshot.data!.docs;
+          return ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: geulDocs.length,
+              itemBuilder: (context, index) {
+                var docId = geulDocs[index].id;
+                if (index < 4) {
+                  if (board == 'freeBoard') {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EachGeul(
+                                    board: board,
+                                    title: geulDocs[index]['title'],
+                                    content: geulDocs[index]['content'],
+                                    userName: geulDocs[index]['userName'],
+                                    time: geulDocs[index]['time']
+                                        .toDate()
+                                        .toString()
+                                        .substring(0, 19),
+                                    docId: docId,
+                                    userId: geulDocs[index]['userId'])));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            geulDocs[index]['title'],
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black.withOpacity(0.7),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                geulDocs[index]['time']
+                                            .toDate()
+                                            .toString()
+                                            .substring(0, 9) ==
+                                        DateTime.now()
+                                            .toString()
+                                            .substring(0, 9)
+                                    ? geulDocs[index]['time']
+                                        .toDate()
+                                        .toString()
+                                        .substring(11, 16)
+                                    : geulDocs[index]['time']
+                                        .toDate()
+                                        .toString()
+                                        .substring(5, 10),
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.favorite_outline,
+                                    size: 18,
+                                    color: Colors.red,
+                                  ),
+                                  Text(
+                                    geulDocs[index]['likes'].toString(),
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.5),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Icon(
+                                    Icons.comment_outlined,
+                                    size: 18,
+                                  ),
+                                  Text(
+                                    geulDocs[index]['comments'].toString(),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          const Divider(
+                            height: 0.5,
+                            color: Palette.color2,
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (board == 'hotBoard') {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EachGeul(
+                                    board: board,
+                                    title: geulDocs[index]['title'],
+                                    content: geulDocs[index]['content'],
+                                    userName: geulDocs[index]['userName'],
+                                    time: geulDocs[index]['time']
+                                        .toDate()
+                                        .toString()
+                                        .substring(0, 19),
+                                    docId: docId,
+                                    userId: 'IdontCare')));
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            geulDocs[index]['title'],
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black.withOpacity(0.7),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                geulDocs[index]['time']
+                                            .toDate()
+                                            .toString()
+                                            .substring(0, 9) ==
+                                        DateTime.now()
+                                            .toString()
+                                            .substring(0, 9)
+                                    ? geulDocs[index]['time']
+                                        .toDate()
+                                        .toString()
+                                        .substring(11, 16)
+                                    : geulDocs[index]['time']
+                                        .toDate()
+                                        .toString()
+                                        .substring(5, 10),
+                                style: TextStyle(
+                                  color: Colors.black.withOpacity(0.5),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.favorite_outline,
+                                    size: 18,
+                                    color: Colors.red,
+                                  ),
+                                  Text(
+                                    geulDocs[index]['likes'].toString(),
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.5),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  const Icon(
+                                    Icons.comment_outlined,
+                                    size: 18,
+                                  ),
+                                  Text(
+                                    geulDocs[index]['comments'].toString(),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          const Divider(
+                            height: 0.5,
+                            color: Palette.color2,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                }
                 return null;
-              }
-            });
-      },
+              });
+        },
+      ),
     );
   }
 }

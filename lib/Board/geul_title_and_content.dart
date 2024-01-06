@@ -29,6 +29,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
   late SharedPreferences prefs;
   bool isLiked = false;
   int likes = 0;
+  int comments = 0;
   @override
   void initState() {
     super.initState();
@@ -42,6 +43,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
         .get();
     setState(() {
       likes = snapshot.get('likes');
+      comments = snapshot.get('comments');
     });
     prefs = await SharedPreferences.getInstance();
     final likedGeul = prefs.getStringList('likedGeul');
@@ -78,6 +80,35 @@ class _TitleAndContentState extends State<TitleAndContent> {
           .collection(widget.board)
           .doc(widget.docId)
           .update({'likes': likes});
+      if (likes == 0) {
+        await FirebaseFirestore.instance
+            .collection('hotBoard')
+            .doc(widget.docId)
+            .delete();
+      } else if (likes > 0 && widget.board == 'freeBoard') {
+        String docId = '${widget.title}+${widget.userId}';
+        await FirebaseFirestore.instance.collection('hotBoard').doc(docId).set({
+          'title': widget.title,
+          'content': widget.content,
+          'userName': widget.userName,
+          'time': Timestamp.now(),
+          'likes': likes,
+          'comments': comments,
+        });
+        final snapshot = await FirebaseFirestore.instance
+            .collection('freeBoard')
+            .doc(widget.docId)
+            .collection('comment')
+            .get();
+        for (var doc in snapshot.docs) {
+          Map<String, dynamic> dataToCopy = doc.data() ?? {};
+          await FirebaseFirestore.instance
+              .collection('hotBoard')
+              .doc(docId)
+              .collection('comment')
+              .add(dataToCopy);
+        }
+      }
       setState(() {
         isLiked = !isLiked;
       });
