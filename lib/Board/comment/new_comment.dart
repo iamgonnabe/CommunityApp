@@ -6,7 +6,11 @@ import 'package:flutterproject/Board/palette.dart';
 class NewComment extends StatefulWidget {
   final String docId;
   final String board;
-  const NewComment({super.key, required this.board, required this.docId});
+  const NewComment({
+    super.key,
+    required this.board,
+    required this.docId,
+  });
 
   @override
   State<NewComment> createState() => _NewCommentState();
@@ -18,6 +22,10 @@ class _NewCommentState extends State<NewComment> {
   void _saveComment() async {
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser;
+    final snapshot = await FirebaseFirestore.instance
+        .collection(widget.board)
+        .doc(widget.docId)
+        .get();
     await FirebaseFirestore.instance
         .collection(widget.board)
         .doc(widget.docId)
@@ -27,15 +35,40 @@ class _NewCommentState extends State<NewComment> {
       'time': Timestamp.now(),
       'userName': user!.displayName,
     });
-    final snapshot = await FirebaseFirestore.instance
-        .collection(widget.board)
-        .doc(widget.docId)
-        .get();
     int commentsCount = await snapshot.get('comments');
     await FirebaseFirestore.instance
         .collection(widget.board)
         .doc(widget.docId)
         .update({'comments': ++commentsCount});
+    if (widget.board == 'hotBoard') {
+      await FirebaseFirestore.instance
+          .collection('freeBoard')
+          .doc(widget.docId)
+          .collection('comment')
+          .add({
+        'comment': _comment,
+        'time': Timestamp.now(),
+        'userName': user.displayName,
+      });
+      await FirebaseFirestore.instance
+          .collection('freeBoard')
+          .doc(widget.docId)
+          .update({'comments': commentsCount});
+    } else if (widget.board == 'freeBoard' && snapshot.get('likes') > 0) {
+      await FirebaseFirestore.instance
+          .collection('hotBoard')
+          .doc(widget.docId)
+          .collection('comment')
+          .add({
+        'comment': _comment,
+        'time': Timestamp.now(),
+        'userName': user.displayName,
+      });
+      await FirebaseFirestore.instance
+          .collection('hotBoard')
+          .doc(widget.docId)
+          .update({'comments': commentsCount});
+    }
     _controller.clear();
     _comment = '';
   }

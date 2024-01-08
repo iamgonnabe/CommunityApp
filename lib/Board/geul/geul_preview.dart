@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/each_geul_screen.dart';
+import 'package:flutterproject/Board/geul/each_geul_screen.dart';
 
 class GeulPreview extends StatelessWidget {
   final String board;
@@ -48,6 +48,8 @@ class GeulPreview extends StatelessWidget {
                 color: Colors.black,
                 fontSize: 16,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             Row(
               children: [

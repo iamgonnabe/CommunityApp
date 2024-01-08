@@ -1,19 +1,43 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterproject/Board/geul/each_geul_screen.dart';
 
-class NewGeul extends StatefulWidget {
+class NewOrEditGeul extends StatefulWidget {
   final String board;
-  const NewGeul({super.key, required this.board});
+  final String title;
+  final String content;
+  final String docId;
+  final bool isEdit;
+  const NewOrEditGeul({
+    super.key,
+    required this.board,
+    required this.content,
+    required this.title,
+    required this.docId,
+    required this.isEdit,
+  });
 
   @override
-  State<NewGeul> createState() => _NewGeulState();
+  State<NewOrEditGeul> createState() => _NewOrEditGeulState();
 }
 
-class _NewGeulState extends State<NewGeul> {
+class _NewOrEditGeulState extends State<NewOrEditGeul> {
   final ScrollController _scrollController = ScrollController();
-  var _title = '';
-  var _content = '';
+  late TextEditingController _titleController;
+  late TextEditingController _contentController;
+  late String _title;
+  late String _content;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _titleController = TextEditingController(text: widget.title);
+    _contentController = TextEditingController(text: widget.content);
+    _title = widget.isEdit ? widget.title : '';
+    _content = widget.isEdit ? widget.content : '';
+  }
+
   void _writeGeul() {
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser;
@@ -25,6 +49,20 @@ class _NewGeulState extends State<NewGeul> {
       'userId': user.uid,
       'likes': 0,
       'comments': 0,
+    });
+    Navigator.pop(context);
+  }
+
+  void _editGeul() {
+    final time = Timestamp.now();
+    FocusScope.of(context).unfocus();
+    FirebaseFirestore.instance
+        .collection(widget.board)
+        .doc(widget.docId)
+        .update({
+      'title': _title,
+      'content': _content,
+      'time': time,
     });
     Navigator.pop(context);
   }
@@ -67,7 +105,7 @@ class _NewGeulState extends State<NewGeul> {
           ElevatedButton(
               onPressed: _title.trim().isEmpty || _content.trim().isEmpty
                   ? _noContent
-                  : _writeGeul,
+                  : (widget.isEdit ? _editGeul : _writeGeul),
               child: const Text('완료')),
         ],
       ),
@@ -79,6 +117,7 @@ class _NewGeulState extends State<NewGeul> {
               height: 50,
               child: SingleChildScrollView(
                 child: TextField(
+                  controller: widget.isEdit ? _titleController : null,
                   style: const TextStyle(color: Colors.black),
                   maxLines: null,
                   decoration: const InputDecoration(hintText: "제목"),
@@ -95,6 +134,7 @@ class _NewGeulState extends State<NewGeul> {
               child: SizedBox(
                 height: 230,
                 child: TextField(
+                  controller: widget.isEdit ? _contentController : null,
                   maxLines: null,
                   expands: true,
                   decoration: const InputDecoration(hintText: "내용을 입력하세요."),

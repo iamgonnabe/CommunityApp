@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/geul_preview.dart';
+import 'package:flutterproject/Board/geul/geul_preview.dart';
 
 class Geul extends StatelessWidget {
   final String board;

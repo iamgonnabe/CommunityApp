@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/geul.dart';
-import 'package:flutterproject/Board/new_geul.dart';
+import 'package:flutterproject/Board/geul/geul.dart';
+import 'package:flutterproject/Board/geul/new_or_edit_geul.dart';
 import 'package:flutterproject/widgets/login_widget.dart';
 
 class FreeBoard extends StatefulWidget {
@@ -44,8 +44,12 @@ class _FreeBoardState extends State<FreeBoard> {
                           stream: FirebaseAuth.instance.authStateChanges(),
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-                              return const NewGeul(
+                              return const NewOrEditGeul(
                                 board: 'freeBoard',
+                                title: "",
+                                content: "",
+                                docId: "",
+                                isEdit: false,
                               );
                             }
                             return const Login();

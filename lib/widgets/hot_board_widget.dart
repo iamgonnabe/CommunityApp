@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/geul.dart';
+import 'package:flutterproject/Board/geul/geul.dart';
 
 class HotBoard extends StatelessWidget {
   const HotBoard({super.key});

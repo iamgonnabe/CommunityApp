@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterproject/widgets/login_alarm_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TitleAndContent extends StatefulWidget {
@@ -30,6 +32,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
   bool isLiked = false;
   int likes = 0;
   int comments = 0;
+  final user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     super.initState();
@@ -43,7 +46,6 @@ class _TitleAndContentState extends State<TitleAndContent> {
         .get();
     setState(() {
       likes = snapshot.get('likes');
-      comments = snapshot.get('comments');
     });
     prefs = await SharedPreferences.getInstance();
     final likedGeul = prefs.getStringList('likedGeul');
@@ -57,6 +59,11 @@ class _TitleAndContentState extends State<TitleAndContent> {
     } else {
       await prefs.setStringList('likedGeul', []);
     }
+  }
+
+  void _login() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const LoginAlarm()));
   }
 
   void _onHeartTap() async {
@@ -86,8 +93,16 @@ class _TitleAndContentState extends State<TitleAndContent> {
             .doc(widget.docId)
             .delete();
       } else if (likes > 0 && widget.board == 'freeBoard') {
-        String docId = '${widget.title}+${widget.userId}';
-        await FirebaseFirestore.instance.collection('hotBoard').doc(docId).set({
+        final data = await FirebaseFirestore.instance
+            .collection(widget.board)
+            .doc(widget.docId)
+            .get();
+        comments = data.get('comments');
+
+        await FirebaseFirestore.instance
+            .collection('hotBoard')
+            .doc(widget.docId)
+            .set({
           'title': widget.title,
           'content': widget.content,
           'userName': widget.userName,
@@ -104,7 +119,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
           Map<String, dynamic> dataToCopy = doc.data() ?? {};
           await FirebaseFirestore.instance
               .collection('hotBoard')
-              .doc(docId)
+              .doc(widget.docId)
               .collection('comment')
               .add(dataToCopy);
         }
@@ -159,7 +174,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
             child: Column(
               children: [
                 IconButton(
-                  onPressed: _onHeartTap,
+                  onPressed: user == null ? _login : _onHeartTap,
                   icon: isLiked
                       ? const Icon(Icons.favorite_rounded)
                       : const Icon(Icons.favorite_outline_rounded),

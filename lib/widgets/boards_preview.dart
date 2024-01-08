@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/each_geul_screen.dart';
+import 'package:flutterproject/Board/geul/each_geul_screen.dart';
 import 'package:flutterproject/Board/palette.dart';
 
 class BoardsPreview extends StatelessWidget {
-  final board;
+  final String board;
   const BoardsPreview({
     super.key,
     required this.board,
@@ -79,6 +79,8 @@ class BoardsPreview extends StatelessWidget {
                               fontSize: 18,
                               color: Colors.black.withOpacity(0.7),
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

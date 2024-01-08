@@ -4,7 +4,11 @@ import 'package:flutterproject/Board/palette.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NewMessage extends StatefulWidget {
-  const NewMessage({super.key});
+  final String yourId;
+  const NewMessage({
+    super.key,
+    required this.yourId,
+  });
 
   @override
   State<NewMessage> createState() => _NewMessageState();
@@ -16,10 +20,23 @@ class _NewMessageState extends State<NewMessage> {
   void _sendMessage() async {
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser;
-    await FirebaseFirestore.instance.collection('chat').add({
+    await FirebaseFirestore.instance
+        .collection('chat')
+        .doc(user!.uid)
+        .collection(widget.yourId)
+        .add({
       'text': _userEnterMessage,
       'time': Timestamp.now(),
-      'userId': user!.uid,
+      'userId': user.uid,
+    });
+    await FirebaseFirestore.instance
+        .collection('chat')
+        .doc(widget.yourId)
+        .collection(user.uid)
+        .add({
+      'text': _userEnterMessage,
+      'time': Timestamp.now(),
+      'userId': user.uid,
     });
     _controller.clear();
     _userEnterMessage = '';

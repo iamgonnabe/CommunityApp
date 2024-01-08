@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/screens/board_screen.dart';
-import 'package:flutterproject/screens/chatting_screen.dart';
+import 'package:flutterproject/screens/chat_screen.dart';
 import 'package:flutterproject/widgets/home_widget.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
 
@@ -19,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   //   const BoardList(),
   //   hasLogin ? const Chatting() : const LoginAlarm(),
   // ];
-
+  final user = FirebaseAuth.instance.currentUser;
+  get userName => user?.displayName;
   bool hasLogin = false;
 
   void isLogin() {
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Widget> widgetOptions = <Widget>[
       const HomePage(),
       const BoardList(),
-      hasLogin ? const Chatting() : const LoginAlarm(),
+      hasLogin ? const Chat() : const LoginAlarm(),
     ];
     return Scaffold(
       appBar: AppBar(
@@ -59,6 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
           Icons.star,
           color: Colors.white,
         ),
+        title: _selectedIndex == 2
+            ? Text(
+                userName,
+                style: const TextStyle(color: Colors.white),
+              )
+            : null,
       ),
       body: SafeArea(child: widgetOptions.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
