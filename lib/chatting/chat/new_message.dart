@@ -2,12 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/palette.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutterproject/screens/chat_screen.dart';
 
 class NewMessage extends StatefulWidget {
   final String yourId;
+  final String yourName;
   const NewMessage({
     super.key,
     required this.yourId,
+    required this.yourName,
   });
 
   @override
@@ -25,7 +28,7 @@ class _NewMessageState extends State<NewMessage> {
         .doc(user!.uid)
         .collection(widget.yourId)
         .add({
-      'text': _userEnterMessage,
+      'message': _userEnterMessage,
       'time': Timestamp.now(),
       'userId': user.uid,
     });
@@ -34,9 +37,31 @@ class _NewMessageState extends State<NewMessage> {
         .doc(widget.yourId)
         .collection(user.uid)
         .add({
-      'text': _userEnterMessage,
+      'message': _userEnterMessage,
       'time': Timestamp.now(),
       'userId': user.uid,
+    });
+    await FirebaseFirestore.instance
+        .collection('recentChat')
+        .doc(user.uid)
+        .collection('recentChat')
+        .doc(widget.yourId)
+        .set({
+      'yourId': widget.yourId,
+      'yourName': widget.yourName,
+      'message': _userEnterMessage,
+      'time': Timestamp.now(),
+    });
+    await FirebaseFirestore.instance
+        .collection('recentChat')
+        .doc(widget.yourId)
+        .collection('recentChat')
+        .doc(user.uid)
+        .set({
+      'yourId': user.uid,
+      'yourName': widget.yourName,
+      'message': _userEnterMessage,
+      'time': Timestamp.now(),
     });
     _controller.clear();
     _userEnterMessage = '';
@@ -45,7 +70,12 @@ class _NewMessageState extends State<NewMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: Colors.black12,
+      ),
+      height: 60,
+      margin: const EdgeInsets.only(top: 8, bottom: 8),
       padding: const EdgeInsets.all(8),
       child: Row(
         children: [
@@ -53,7 +83,16 @@ class _NewMessageState extends State<NewMessage> {
             child: TextField(
               maxLines: null,
               controller: _controller,
-              decoration: const InputDecoration(labelText: "Send a message..."),
+              decoration: InputDecoration(
+                hintText: "메시지 보내기...",
+                hintStyle: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black.withOpacity(0.7),
+                ),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0),
+                border: InputBorder.none,
+              ),
               onChanged: (value) {
                 setState(() {
                   _userEnterMessage = value;
@@ -64,8 +103,9 @@ class _NewMessageState extends State<NewMessage> {
           IconButton(
             onPressed: _userEnterMessage.trim().isEmpty ? null : _sendMessage,
             icon: const Icon(Icons.send),
-            color:
-                _userEnterMessage.trim().isEmpty ? Colors.grey : Palette.color1,
+            color: _userEnterMessage.trim().isEmpty
+                ? Colors.white
+                : Colors.blueAccent,
           ),
         ],
       ),

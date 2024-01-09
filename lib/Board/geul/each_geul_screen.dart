@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/comment/comment.dart';
@@ -54,14 +53,7 @@ class _EachGeulState extends State<EachGeul> {
           ),
         ),
         backgroundColor: Palette.color1,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.chevron_left),
-          color: Colors.white,
-          iconSize: 40,
-        ),
+        foregroundColor: Colors.white,
         actions: [
           PopupMenuButton<int>(
             elevation: 2,
@@ -84,7 +76,10 @@ class _EachGeulState extends State<EachGeul> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Chatting(yourId: widget.userId)),
+                        builder: (context) => Chatting(
+                              yourId: widget.userId,
+                              yourName: widget.userName,
+                            )),
                   );
                 } else {
                   Navigator.push(

@@ -116,7 +116,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
             .collection('comment')
             .get();
         for (var doc in snapshot.docs) {
-          Map<String, dynamic> dataToCopy = doc.data() ?? {};
+          Map<String, dynamic> dataToCopy = doc.data();
           await FirebaseFirestore.instance
               .collection('hotBoard')
               .doc(widget.docId)
