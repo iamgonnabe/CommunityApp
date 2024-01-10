@@ -5,6 +5,7 @@ import 'package:flutterproject/screens/board_screen.dart';
 import 'package:flutterproject/screens/chat_screen.dart';
 import 'package:flutterproject/widgets/home_widget.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
+import 'package:flutterproject/widgets/login_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,10 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   //   const BoardList(),
   //   hasLogin ? const Chatting() : const LoginAlarm(),
   // ];
-  final user = FirebaseAuth.instance.currentUser;
-  get userName => user?.displayName;
+  var user = FirebaseAuth.instance.currentUser;
   bool hasLogin = false;
-
   void isLogin() {
     FirebaseAuth.instance.userChanges().listen((User? user) {
       setState(() {
@@ -48,21 +47,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Palette.color1,
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
               onPressed: () {},
               icon: const Icon(
                 Icons.search,
-                color: Colors.white,
               )),
         ],
-        leading: const Icon(
-          Icons.star,
-          color: Colors.white,
-        ),
         title: _selectedIndex == 2
             ? Text(
-                userName,
+                user?.displayName ?? '',
                 style: const TextStyle(color: Colors.white),
               )
             : null,
@@ -80,6 +75,103 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _selectedIndex,
         selectedItemColor: Palette.color1,
         onTap: _onItemTapped,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              currentAccountPicture: const Icon(
+                Icons.account_circle_rounded,
+                size: 75,
+                color: Colors.white70,
+              ),
+              accountName: hasLogin
+                  ? Text(
+                      user?.displayName ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
+              accountEmail: hasLogin
+                  ? Text(
+                      user?.email ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
+              decoration: const BoxDecoration(
+                color: Palette.color1,
+              ),
+              onDetailsPressed: () {},
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.account_box_rounded,
+                color: Palette.color4,
+              ),
+              title: hasLogin
+                  ? const Text(
+                      '로그아웃',
+                      style: TextStyle(color: Colors.black),
+                    )
+                  : const Text(
+                      '로그인',
+                      style: TextStyle(color: Colors.black),
+                    ),
+              trailing: const Icon(Icons.navigate_next),
+              onTap: () {
+                if (user != null) {
+                  FirebaseAuth.instance.signOut();
+                  setState(() {
+                    user == null;
+                    hasLogin = false;
+                  });
+                } else {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Login()));
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.settings,
+                color: Palette.color4,
+              ),
+              title: const Text('설정'),
+              trailing: const Icon(Icons.navigate_next),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.bookmark_rounded,
+                color: Palette.color4,
+              ),
+              title: const Text('개발자의 말'),
+              trailing: const Icon(Icons.navigate_next),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text(
+                          '아 못해 먹겠네',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // AlertDialog 닫기
+                            },
+                            child: const Text('닫기'),
+                          ),
+                        ],
+                      );
+                    });
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -9,6 +9,8 @@ class GeulPreview extends StatelessWidget {
   final String time;
   final String docId;
   final String userId;
+  final int comments;
+  final int likes;
   const GeulPreview({
     super.key,
     required this.board,
@@ -18,6 +20,8 @@ class GeulPreview extends StatelessWidget {
     required this.time,
     required this.docId,
     required this.userId,
+    required this.comments,
+    required this.likes,
   });
 
   @override
@@ -53,9 +57,23 @@ class GeulPreview extends StatelessWidget {
             ),
             Row(
               children: [
-                const Text(
-                  '댓글 ',
-                  style: TextStyle(color: Colors.grey),
+                const Icon(
+                  Icons.favorite_outline_rounded,
+                  size: 13,
+                  color: Colors.red,
+                ),
+                Text(
+                  '${likes.toString()} ',
+                  style: const TextStyle(color: Colors.red),
+                ),
+                const Icon(
+                  Icons.chat_bubble_outline_rounded,
+                  size: 13,
+                  color: Colors.blueGrey,
+                ),
+                Text(
+                  comments.toString(),
+                  style: const TextStyle(color: Colors.blueGrey),
                 ),
                 const Text('|', style: TextStyle(color: Colors.grey)),
                 Text(' $time ', style: const TextStyle(color: Colors.grey)),

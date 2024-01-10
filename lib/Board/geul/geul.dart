@@ -37,6 +37,8 @@ class Geul extends StatelessWidget {
                       .substring(0, 19),
                   docId: docId,
                   userId: geulDocs[index]['userId'],
+                  comments: geulDocs[index]['comments'],
+                  likes: geulDocs[index]['likes'],
                 );
               } else if (board == 'hotBoard') {
                 return GeulPreview(
@@ -50,6 +52,8 @@ class Geul extends StatelessWidget {
                       .substring(0, 19),
                   docId: docId,
                   userId: 'IdontCare',
+                  comments: geulDocs[index]['comments'],
+                  likes: geulDocs[index]['likes'],
                 );
               }
               return null;

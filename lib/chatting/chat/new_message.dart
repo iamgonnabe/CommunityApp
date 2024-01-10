@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/palette.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutterproject/screens/chat_screen.dart';
 
 class NewMessage extends StatefulWidget {
   final String yourId;

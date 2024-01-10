@@ -122,7 +122,7 @@ class BoardsPreview extends StatelessWidget {
                                     width: 5,
                                   ),
                                   const Icon(
-                                    Icons.comment_outlined,
+                                    Icons.chat_bubble_outline_rounded,
                                     size: 18,
                                   ),
                                   Text(
@@ -213,7 +213,7 @@ class BoardsPreview extends StatelessWidget {
                                     width: 5,
                                   ),
                                   const Icon(
-                                    Icons.comment_outlined,
+                                    Icons.chat_bubble_outline_rounded,
                                     size: 18,
                                   ),
                                   Text(

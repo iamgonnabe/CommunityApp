@@ -123,6 +123,15 @@ class _TitleAndContentState extends State<TitleAndContent> {
               .collection('comment')
               .add(dataToCopy);
         }
+        await FirebaseFirestore.instance
+            .collection('hotBoard')
+            .doc(widget.docId)
+            .update({'likes': likes});
+      } else if (widget.board == 'hoBoard') {
+        await FirebaseFirestore.instance
+            .collection('freeBoard')
+            .doc(widget.docId)
+            .update({'likes': likes});
       }
       setState(() {
         isLiked = !isLiked;

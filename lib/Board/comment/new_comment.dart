@@ -34,6 +34,7 @@ class _NewCommentState extends State<NewComment> {
       'comment': _comment,
       'time': Timestamp.now(),
       'userName': user!.displayName,
+      'userId': user.uid,
     });
     int commentsCount = await snapshot.get('comments');
     await FirebaseFirestore.instance
@@ -49,6 +50,7 @@ class _NewCommentState extends State<NewComment> {
         'comment': _comment,
         'time': Timestamp.now(),
         'userName': user.displayName,
+        'userId': user.uid,
       });
       await FirebaseFirestore.instance
           .collection('freeBoard')
@@ -63,6 +65,7 @@ class _NewCommentState extends State<NewComment> {
         'comment': _comment,
         'time': Timestamp.now(),
         'userName': user.displayName,
+        'userId': user.uid,
       });
       await FirebaseFirestore.instance
           .collection('hotBoard')
@@ -77,7 +80,11 @@ class _NewCommentState extends State<NewComment> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.only(left: 20),
+      decoration: BoxDecoration(
+        color: Palette.color6,
+        borderRadius: BorderRadius.circular(30),
+      ),
       child: Row(
         children: [
           Expanded(
@@ -85,7 +92,13 @@ class _NewCommentState extends State<NewComment> {
               maxLines: null,
               controller: _controller,
               style: const TextStyle(color: Colors.black),
-              decoration: const InputDecoration(hintText: "댓글을 입력하세요."),
+              decoration: InputDecoration(
+                hintText: "댓글을 입력하세요.",
+                hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                filled: true,
+                fillColor: Palette.color6,
+                border: InputBorder.none,
+              ),
               onChanged: (value) {
                 setState(() {
                   _comment = value;
@@ -96,7 +109,7 @@ class _NewCommentState extends State<NewComment> {
           IconButton(
             onPressed: _comment.trim().isEmpty ? null : _saveComment,
             icon: const Icon(Icons.send),
-            color: _comment.trim().isEmpty ? Colors.grey : Palette.color1,
+            color: _comment.trim().isEmpty ? Colors.white : Colors.black,
           ),
         ],
       ),
