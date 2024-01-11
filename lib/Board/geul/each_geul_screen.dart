@@ -153,6 +153,8 @@ class _EachGeulState extends State<EachGeul> {
               NewComment(
                 board: widget.board,
                 docId: widget.docId,
+                isRecomment: false,
+                commentDocId: 'Idontcare',
               ),
             ],
           ),
