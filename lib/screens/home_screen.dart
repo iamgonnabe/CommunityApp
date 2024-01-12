@@ -1,11 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/palette.dart';
+import 'package:flutterproject/main.dart';
 import 'package:flutterproject/screens/board_screen.dart';
 import 'package:flutterproject/screens/chat_screen.dart';
 import 'package:flutterproject/widgets/home_widget.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
 import 'package:flutterproject/widgets/login_widget.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,30 +16,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  // final List<Widget> _widgetOptions = <Widget>[
-  //   const HomePage(),
-  //   const BoardList(),
-  //   hasLogin ? const Chatting() : const LoginAlarm(),
-  // ];
-  var user = FirebaseAuth.instance.currentUser;
   bool hasLogin = false;
-  void isLogin() {
-    FirebaseAuth.instance.userChanges().listen((User? user) {
-      setState(() {
-        hasLogin = user != null;
-      });
-    });
-  }
 
   _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-    isLogin();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<AppUser>(context).user != null) {
+      hasLogin = true;
+    } else {
+      hasLogin = false;
+    }
     List<Widget> widgetOptions = <Widget>[
       const HomePage(),
       const BoardList(),
@@ -57,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         title: _selectedIndex == 2
             ? Text(
-                user?.displayName ?? '',
+                Provider.of<AppUser>(context).user?.displayName ?? '',
                 style: const TextStyle(color: Colors.white),
               )
             : null,
@@ -87,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               accountName: hasLogin
                   ? Text(
-                      user?.displayName ?? '',
+                      Provider.of<AppUser>(context).user?.displayName ?? '',
                       style: const TextStyle(
                         color: Colors.white,
                       ),
@@ -95,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   : null,
               accountEmail: hasLogin
                   ? Text(
-                      user?.email ?? '',
+                      Provider.of<AppUser>(context).user?.email ?? '',
                       style: const TextStyle(
                         color: Colors.white,
                       ),
@@ -122,12 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
               trailing: const Icon(Icons.navigate_next),
               onTap: () {
-                if (user != null) {
-                  FirebaseAuth.instance.signOut();
-                  setState(() {
-                    user == null;
-                    hasLogin = false;
-                  });
+                if (Provider.of<AppUser>(context, listen: false).user != null) {
+                  Provider.of<AppUser>(context, listen: false).logout();
                 } else {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => const Login()));

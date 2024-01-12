@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/palette.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutterproject/main.dart';
 import 'package:flutterproject/screens/home_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -406,6 +408,8 @@ class _LoginState extends State<Login> {
                             await newUser.user!.updateDisplayName(userName);
                             if (!context.mounted) return;
                             if (newUser.user != null) {
+                              Provider.of<AppUser>(context, listen: false)
+                                  .login();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) {
@@ -439,6 +443,8 @@ class _LoginState extends State<Login> {
                             );
                             if (!context.mounted) return;
                             if (newUser.user != null) {
+                              Provider.of<AppUser>(context, listen: false)
+                                  .login();
                               Navigator.pop(context);
                               setState(() {
                                 showSpinner = false;

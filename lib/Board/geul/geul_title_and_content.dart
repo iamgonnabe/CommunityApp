@@ -82,6 +82,9 @@ class _TitleAndContentState extends State<TitleAndContent> {
           likes++;
         });
       }
+      setState(() {
+        isLiked = !isLiked;
+      });
       await prefs.setStringList('likedGeul', likedGeul);
       await FirebaseFirestore.instance
           .collection(widget.board)
@@ -117,11 +120,32 @@ class _TitleAndContentState extends State<TitleAndContent> {
             .get();
         for (var doc in snapshot.docs) {
           Map<String, dynamic> dataToCopy = doc.data();
+          var commentId = doc.id;
           await FirebaseFirestore.instance
               .collection('hotBoard')
               .doc(widget.docId)
               .collection('comment')
-              .add(dataToCopy);
+              .doc(commentId)
+              .set(dataToCopy);
+          final snapshot1 = await FirebaseFirestore.instance
+              .collection('freeBoard')
+              .doc(widget.docId)
+              .collection('comment')
+              .doc(commentId)
+              .collection('recomment')
+              .get();
+          if (snapshot1.docs.isNotEmpty) {
+            for (var doc1 in snapshot1.docs) {
+              Map<String, dynamic> dataToCopy1 = doc1.data();
+              await FirebaseFirestore.instance
+                  .collection('hotBoard')
+                  .doc(widget.docId)
+                  .collection('comment')
+                  .doc(commentId)
+                  .collection('recomment')
+                  .add(dataToCopy1);
+            }
+          }
         }
         await FirebaseFirestore.instance
             .collection('hotBoard')
@@ -133,9 +157,6 @@ class _TitleAndContentState extends State<TitleAndContent> {
             .doc(widget.docId)
             .update({'likes': likes});
       }
-      setState(() {
-        isLiked = !isLiked;
-      });
     }
   }
 

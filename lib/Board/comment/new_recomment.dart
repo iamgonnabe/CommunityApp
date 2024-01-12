@@ -2,27 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/palette.dart';
+import 'package:flutterproject/main.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
+import 'package:provider/provider.dart';
 
-class NewComment extends StatefulWidget {
+class NewRecomment extends StatefulWidget {
   final String docId;
   final String board;
-  const NewComment({
+  const NewRecomment({
     super.key,
     required this.board,
     required this.docId,
   });
 
   @override
-  State<NewComment> createState() => _NewCommentState();
+  State<NewRecomment> createState() => _NewRecommentState();
 }
 
-class _NewCommentState extends State<NewComment> {
+class _NewRecommentState extends State<NewRecomment> {
   final _controller = TextEditingController();
   var _comment = '';
-  void _saveComment() async {
+
+  void _saveRecomment() async {
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser;
+    final commentDocId =
+        Provider.of<ForRecomment>(context, listen: false).commentDocId;
     if (user == null) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const LoginAlarm()));
@@ -31,57 +36,44 @@ class _NewCommentState extends State<NewComment> {
           .collection(widget.board)
           .doc(widget.docId)
           .get();
+      int commentsCount = await snapshot.get('comments');
+
+      await FirebaseFirestore.instance
+          .collection(widget.board)
+          .doc(widget.docId)
+          .update({'comments': ++commentsCount});
+
+      final snaps = await FirebaseFirestore.instance
+          .collection(widget.board)
+          .doc(widget.docId)
+          .collection('comment')
+          .doc(commentDocId)
+          .get();
+      int reCommentCount = await snaps.get('recomment');
+
       await FirebaseFirestore.instance
           .collection(widget.board)
           .doc(widget.docId)
           .collection('comment')
+          .doc(commentDocId)
+          .update({'recomment': ++reCommentCount});
+
+      await FirebaseFirestore.instance
+          .collection(widget.board)
+          .doc(widget.docId)
+          .collection('comment')
+          .doc(commentDocId)
+          .collection('recomment')
           .add({
         'comment': _comment,
         'time': Timestamp.now(),
         'userName': user.displayName,
         'userId': user.uid,
-        'recomment': 0,
       });
-      int commentsCount = await snapshot.get('comments');
-      await FirebaseFirestore.instance
-          .collection(widget.board)
-          .doc(widget.docId)
-          .update({'comments': ++commentsCount});
-      if (widget.board == 'hotBoard') {
-        await FirebaseFirestore.instance
-            .collection('freeBoard')
-            .doc(widget.docId)
-            .collection('comment')
-            .add({
-          'comment': _comment,
-          'time': Timestamp.now(),
-          'userName': user.displayName,
-          'userId': user.uid,
-          'recomment': 0,
-        });
-        await FirebaseFirestore.instance
-            .collection('freeBoard')
-            .doc(widget.docId)
-            .update({'comments': commentsCount});
-      } else if (widget.board == 'freeBoard' && snapshot.get('likes') > 0) {
-        await FirebaseFirestore.instance
-            .collection('hotBoard')
-            .doc(widget.docId)
-            .collection('comment')
-            .add({
-          'comment': _comment,
-          'time': Timestamp.now(),
-          'userName': user.displayName,
-          'userId': user.uid,
-          'recomment': 0,
-        });
-        await FirebaseFirestore.instance
-            .collection('hotBoard')
-            .doc(widget.docId)
-            .update({'comments': commentsCount});
-      }
       _controller.clear();
       _comment = '';
+      if (!context.mounted) return;
+      Provider.of<ForRecomment>(context, listen: false).update('', false);
     }
   }
 
@@ -102,7 +94,7 @@ class _NewCommentState extends State<NewComment> {
               controller: _controller,
               style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                hintText: "댓글을 입력하세요.",
+                hintText: "대댓글을 입력하세요.",
                 hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
                 filled: true,
                 fillColor: Palette.color6,
@@ -116,7 +108,7 @@ class _NewCommentState extends State<NewComment> {
             ),
           ),
           IconButton(
-            onPressed: _comment.trim().isEmpty ? null : _saveComment,
+            onPressed: _comment.trim().isEmpty ? null : _saveRecomment,
             icon: const Icon(Icons.send),
             color: _comment.trim().isEmpty ? Colors.white : Colors.black,
           ),

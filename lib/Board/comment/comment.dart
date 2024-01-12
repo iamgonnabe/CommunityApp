@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterproject/Board/comment/new_comment.dart';
 import 'package:flutterproject/Board/palette.dart';
+import 'package:flutterproject/main.dart';
 import 'package:flutterproject/screens/chatting_screen.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
+import 'package:provider/provider.dart';
 
 class Comments extends StatefulWidget {
   final String board;
@@ -28,31 +29,31 @@ class Comments extends StatefulWidget {
 }
 
 class _CommentsState extends State<Comments> {
+  final GlobalKey iconButtonKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    bool isRecomment = false;
     int selectedIndex = -1;
     final user = FirebaseAuth.instance.currentUser;
-    void showPopupMenu(BuildContext context, String yourId, String yourName) {
+    void showPopupMenu(
+        BuildContext context, String yourId, String yourName, Rect buttonRect) {
+      final RenderBox overlay =
+          Overlay.of(context).context.findRenderObject() as RenderBox;
+
+      final RelativeRect position = RelativeRect.fromRect(
+        buttonRect,
+        const Offset(10, -40) & overlay.size,
+      );
+
       showMenu(
         color: Palette.color7,
         context: context,
-        position: const RelativeRect.fromLTRB(100, 400, 0, 0),
+        position: position,
         items: [
           const PopupMenuItem(
             value: 1,
             child: Center(
               child: Text(
                 '채팅하기',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-          const PopupMenuItem(
-            value: 2,
-            child: Center(
-              child: Text(
-                '댓글달기',
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -70,7 +71,7 @@ class _CommentsState extends State<Comments> {
                         yourName: yourName,
                       )),
             );
-          } else if (value == 2) {}
+          }
         } else {
           Navigator.push(
             context,
@@ -100,22 +101,16 @@ class _CommentsState extends State<Comments> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
+                        Provider.of<ForRecomment>(context, listen: false)
+                            .update(docId, false);
                         Navigator.pop(context);
                       },
                       child: const Text('취소'),
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          selectedIndex = index;
-                          isRecomment = true;
-                        });
-                        NewComment(
-                          board: widget.board,
-                          docId: widget.docId,
-                          commentDocId: docId,
-                          isRecomment: isRecomment,
-                        );
+                        Provider.of<ForRecomment>(context, listen: false)
+                            .update(docId, true);
                         Navigator.pop(context);
                       },
                       child: const Text('확인'),
@@ -148,7 +143,6 @@ class _CommentsState extends State<Comments> {
             itemCount: commentDocs.length,
             itemBuilder: (context, index) {
               var docId = commentDocs[index].id;
-              int recomment = commentDocs[index]['recomment'];
               return GestureDetector(
                 onTap: () {
                   reComment(docId, context, index);
@@ -193,25 +187,167 @@ class _CommentsState extends State<Comments> {
                           ),
                           commentDocs[index]['userId'] != user?.uid
                               ? IconButton(
+                                  key: iconButtonKey,
                                   onPressed: () {
+                                    final RenderBox renderBox = iconButtonKey
+                                        .currentContext!
+                                        .findRenderObject() as RenderBox;
+                                    final Rect buttonRect =
+                                        renderBox.localToGlobal(Offset.zero) &
+                                            renderBox.size;
                                     showPopupMenu(
                                         context,
                                         commentDocs[index]['userId'],
-                                        commentDocs[index]['userName']);
+                                        commentDocs[index]['userName'],
+                                        buttonRect);
                                   },
                                   icon: const Icon(Icons.more_vert_rounded))
                               : Container(),
                         ],
                       ),
-                      recomment > 0
-                          ? TextButton(
-                              onPressed: () {}, child: Text('답글 $recomment개'))
-                          : const SizedBox(
-                              height: 3,
-                            ),
                       const Divider(
                         height: 1,
                       ),
+                      StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection(widget.board)
+                              .doc(widget.docId)
+                              .collection('comment')
+                              .doc(docId)
+                              .collection('recomment')
+                              .orderBy('time')
+                              .snapshots(),
+                          builder: (context,
+                              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                                  snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            final recommentDocs = snapshot.data!.docs;
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: recommentDocs.length,
+                              itemBuilder: (context, indexa) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    reComment(docId, context, index);
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 6, left: 6, right: 6),
+                                    color: Colors.black.withOpacity(0.1),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons
+                                                  .subdirectory_arrow_right_rounded,
+                                              size: 15,
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(
+                                                  height: 3,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          recommentDocs[indexa]
+                                                              ['userName'],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 3,
+                                                        ),
+                                                        Text(
+                                                          recommentDocs[indexa]
+                                                              ['comment'],
+                                                        ),
+                                                        Text(
+                                                          recommentDocs[indexa]
+                                                                  ['time']
+                                                              .toDate()
+                                                              .toString()
+                                                              .substring(5, 16),
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.8),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    recommentDocs[indexa]
+                                                                ['userId'] !=
+                                                            user?.uid
+                                                        ? IconButton(
+                                                            key: iconButtonKey,
+                                                            onPressed: () {
+                                                              final RenderBox
+                                                                  renderBox =
+                                                                  iconButtonKey
+                                                                          .currentContext!
+                                                                          .findRenderObject()
+                                                                      as RenderBox;
+                                                              final Rect
+                                                                  buttonRect =
+                                                                  renderBox.localToGlobal(
+                                                                          Offset
+                                                                              .zero) &
+                                                                      renderBox
+                                                                          .size;
+                                                              showPopupMenu(
+                                                                  context,
+                                                                  recommentDocs[
+                                                                          indexa]
+                                                                      [
+                                                                      'userId'],
+                                                                  recommentDocs[
+                                                                          indexa]
+                                                                      [
+                                                                      'userName'],
+                                                                  buttonRect);
+                                                            },
+                                                            icon: const Icon(Icons
+                                                                .more_vert_rounded))
+                                                        : Container(),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 3,
+                                        ),
+                                        const Divider(
+                                          height: 1,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }),
                     ],
                   ),
                 ),

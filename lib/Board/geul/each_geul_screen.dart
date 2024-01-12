@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/comment/comment.dart';
+import 'package:flutterproject/Board/comment/new_recomment.dart';
 import 'package:flutterproject/Board/geul/geul_title_and_content.dart';
 import 'package:flutterproject/Board/comment/new_comment.dart';
 import 'package:flutterproject/Board/geul/new_or_edit_geul.dart';
 import 'package:flutterproject/Board/palette.dart';
+import 'package:flutterproject/main.dart';
 import 'package:flutterproject/screens/chatting_screen.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
+import 'package:provider/provider.dart';
 
 class EachGeul extends StatefulWidget {
   final String board;
@@ -150,12 +153,12 @@ class _EachGeulState extends State<EachGeul> {
                 time: widget.time,
                 userName: widget.userName,
               ),
-              NewComment(
-                board: widget.board,
-                docId: widget.docId,
-                isRecomment: false,
-                commentDocId: 'Idontcare',
-              ),
+              Provider.of<ForRecomment>(context).isRecomment
+                  ? NewRecomment(board: widget.board, docId: widget.docId)
+                  : NewComment(
+                      board: widget.board,
+                      docId: widget.docId,
+                    ),
             ],
           ),
         ),
