@@ -22,26 +22,30 @@ class RecentMessage extends StatefulWidget {
 
 class _RecentMessageState extends State<RecentMessage> {
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    time();
+  }
+
+  String time() {
     DateTime current = Timestamp.now().toDate();
     Duration difference = current.difference(widget.time);
     int timepassed = difference.inMinutes;
     String count = '분 전';
-    void time() {
-      if (timepassed > 59) {
-        timepassed = difference.inHours;
-        count = '시간 전';
-        if (timepassed > 23) {
-          timepassed = difference.inDays;
-          count = '일 전';
-        }
+    if (timepassed > 59) {
+      timepassed = difference.inHours;
+      count = '시간 전';
+      if (timepassed > 23) {
+        timepassed = difference.inDays;
+        count = '일 전';
       }
     }
+    return '$timepassed$count';
+  }
 
-    initState() {
-      time();
-    }
-
+  @override
+  Widget build(BuildContext context) {
+    String ago = time();
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -83,7 +87,7 @@ class _RecentMessageState extends State<RecentMessage> {
                           ),
                         ),
                       ),
-                      Text('$timepassed$count'),
+                      Text(ago),
                     ],
                   ),
                 ),

@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
           create: (context) => AppUser(user: null),
         ),
         ChangeNotifierProvider(
-          create: (context) =>
-              ForRecomment(commentDocId: '', isRecomment: false),
+          create: (context) => ForRecomment(
+              commentDocId: '', isRecomment: false, selectedIndex: -1),
         ),
       ],
       child: GetMaterialApp(
@@ -62,13 +62,20 @@ class AppUser with ChangeNotifier {
 class ForRecomment with ChangeNotifier {
   String commentDocId;
   bool isRecomment;
+  int selectedIndex;
   ForRecomment({
     required this.commentDocId,
     required this.isRecomment,
+    required this.selectedIndex,
   });
   void update(String a, bool b) {
     commentDocId = a;
     isRecomment = b;
+    notifyListeners();
+  }
+
+  void selected(int index) {
+    selectedIndex = index;
     notifyListeners();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/comment/comment.dart';
@@ -8,6 +9,8 @@ import 'package:flutterproject/Board/geul/new_or_edit_geul.dart';
 import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/main.dart';
 import 'package:flutterproject/screens/chatting_screen.dart';
+import 'package:flutterproject/widgets/free_board_widget.dart';
+import 'package:flutterproject/widgets/hot_board_widget.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +41,6 @@ class _EachGeulState extends State<EachGeul> {
   final user = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     widget.title;
     widget.content;
@@ -75,6 +77,50 @@ class _EachGeulState extends State<EachGeul> {
                           isEdit: true)),
                 );
               } else if (value == 1) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text(
+                          '삭제 하시겠습니까?',
+                        ),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseFirestore.instance
+                                  .collection(widget.board)
+                                  .doc(widget.docId)
+                                  .delete();
+                              if (!context.mounted) return;
+                              if (widget.board == 'freeBoard') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const FreeBoard()),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const HotBoard()),
+                                );
+                              }
+                            },
+                            child: const Text(
+                              '삭제',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('취소'),
+                          ),
+                        ],
+                      );
+                    });
+              } else if (value == 2) {
                 if (user != null) {
                   Navigator.push(
                     context,
@@ -94,35 +140,53 @@ class _EachGeulState extends State<EachGeul> {
             },
             offset: const Offset(-10, 52),
             itemBuilder: (context) {
-              return [
-                widget.userId == user?.uid
-                    ? const PopupMenuItem(
-                        value: 0,
-                        child: Center(
-                          child: Text(
-                            '수정하기',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+              if (widget.userId == user?.uid) {
+                return [
+                  const PopupMenuItem(
+                    value: 0,
+                    child: Center(
+                      child: Text(
+                        '수정하기',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                      )
-                    : const PopupMenuItem(
-                        value: 1,
-                        child: Center(
-                          child: Text(
-                            '채팅하기',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
+                      ),
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                  const PopupMenuItem(
+                    value: 1,
+                    child: Center(
+                      child: Text(
+                        '삭제하기',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                      )
-              ];
+                      ),
+                    ),
+                  )
+                ];
+              } else {
+                return [
+                  const PopupMenuItem(
+                    value: 2,
+                    child: Center(
+                      child: Text(
+                        '채팅하기',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  )
+                ];
+              }
             },
           ),
           const SizedBox(

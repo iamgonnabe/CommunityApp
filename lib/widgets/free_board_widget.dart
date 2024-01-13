@@ -20,17 +20,15 @@ class _FreeBoardState extends State<FreeBoard> {
       ),
       body: Stack(
         children: [
-          Container(
-            child: const Column(children: [
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                  child: Geul(
-                board: 'freeBoard',
-              )),
-            ]),
-          ),
+          const Column(children: [
+            SizedBox(
+              height: 20,
+            ),
+            Expanded(
+                child: Geul(
+              board: 'freeBoard',
+            )),
+          ]),
           Positioned(
             right: 135,
             left: 135,

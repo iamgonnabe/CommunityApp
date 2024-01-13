@@ -29,7 +29,6 @@ class _NewOrEditGeulState extends State<NewOrEditGeul> {
   late String _content;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _titleController = TextEditingController(text: widget.title);
     _contentController = TextEditingController(text: widget.content);

@@ -10,19 +10,17 @@ class HotBoard extends StatelessWidget {
       appBar: AppBar(
         title: const Text('HOT 게시판'),
       ),
-      body: Stack(
+      body: const Stack(
         children: [
-          Container(
-            child: const Column(children: [
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                  child: Geul(
-                board: 'hotBoard',
-              )),
-            ]),
-          ),
+          Column(children: [
+            SizedBox(
+              height: 20,
+            ),
+            Expanded(
+                child: Geul(
+              board: 'hotBoard',
+            )),
+          ]),
         ],
       ),
     );
