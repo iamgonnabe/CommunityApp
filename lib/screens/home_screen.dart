@@ -50,7 +50,6 @@ class _HomeScreenState extends State<HomeScreen> {
         title: _selectedIndex == 2
             ? Text(
                 Provider.of<AppUser>(context).user?.displayName ?? '',
-                style: const TextStyle(color: Colors.white),
               )
             : null,
       ),

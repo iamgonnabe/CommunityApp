@@ -9,7 +9,7 @@ import 'package:flutterproject/Board/geul/new_or_edit_geul.dart';
 import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/main.dart';
 import 'package:flutterproject/screens/chatting_screen.dart';
-import 'package:flutterproject/widgets/free_board_widget.dart';
+import 'package:flutterproject/screens/free_board_screen.dart';
 import 'package:flutterproject/widgets/hot_board_widget.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
 import 'package:provider/provider.dart';

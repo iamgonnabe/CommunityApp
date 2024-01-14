@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutterproject/widgets/boards_preview.dart';
 import 'package:flutterproject/widgets/go_to_boards.dart';
-import 'package:flutterproject/widgets/free_board_widget.dart';
+import 'package:flutterproject/screens/free_board_screen.dart';
 import 'package:flutterproject/widgets/hot_board_widget.dart';
-import 'package:flutterproject/widgets/review_board.widget.dart';
+import 'package:flutterproject/screens/review_board.screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
