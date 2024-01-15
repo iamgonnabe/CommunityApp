@@ -15,7 +15,14 @@ class LoginAlarm extends StatelessWidget {
         height: 150,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: Palette.color8,
+          gradient: const LinearGradient(
+            colors: [
+              Palette.color10,
+              Palette.color7,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomRight,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.3),
