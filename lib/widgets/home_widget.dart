@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/widgets/boards_preview.dart';
 import 'package:flutterproject/widgets/go_to_boards.dart';
 import 'package:flutterproject/screens/free_board_screen.dart';
 import 'package:flutterproject/widgets/hot_board_widget.dart';
-import 'package:flutterproject/screens/review_board.screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -20,12 +20,26 @@ class HomePage extends StatelessWidget {
             ),
             Center(
               child: Container(
-                color: Colors.grey,
                 width: 300,
                 height: 50,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Palette.color7,
+                      Palette.color1,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
                 child: const Text(
-                  '광고 배너',
+                  'Welcome',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  ),
                 ),
               ),
             ),
@@ -45,13 +59,6 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(
               height: 30,
-            ),
-            const GoToBoards(board: '리뷰', boardList: ReviewBoard()),
-            const BoardsPreview(
-              board: 'freeBoard',
-            ),
-            const SizedBox(
-              height: 50,
             ),
           ],
         ),

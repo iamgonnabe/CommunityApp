@@ -19,13 +19,20 @@ class BoardsPreview extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Palette.color3.withOpacity(0.8),
+        gradient: const LinearGradient(
+          colors: [
+            Palette.color7,
+            Palette.color1,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomRight,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
             blurRadius: 15,
             spreadRadius: 5,
-            offset: const Offset(0, 10),
+            offset: const Offset(10, 10),
           ),
         ],
       ),

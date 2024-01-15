@@ -10,6 +10,7 @@ class ProductModel {
         price = json['lprice'];
 
   var like = false.obs;
+  var likes = 0.obs;
 
   static String _processTitle(String rawTitle) {
     String processedTitle = rawTitle.replaceAll("</b>", "");
