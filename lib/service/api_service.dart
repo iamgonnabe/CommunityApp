@@ -7,8 +7,8 @@ class ApiService {
 
   static Future<List<ProductModel>> fetchProducts(String product) async {
     final Map<String, String> headers = {
-      'X-Naver-Client-Id': '8WFW72Gai4IQyg4u0GGD',
-      'X-Naver-Client-Secret': 'K_fRuW3o5u',
+      'X-Naver-Client-Id': 'myId',
+      'X-Naver-Client-Secret': 'mySecret',
     };
     List<ProductModel> productInstances = [];
 
