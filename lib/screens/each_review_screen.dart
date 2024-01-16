@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/models/product_model.dart';
-import 'package:get/get.dart';
 
 class ReviewGeul extends StatefulWidget {
   final ProductModel product;
@@ -13,7 +12,6 @@ class ReviewGeul extends StatefulWidget {
 
 class _ReviewGeulState extends State<ReviewGeul> {
   final _controller = TextEditingController();
-  var _comment = '';
   bool isLiked = false;
   bool isDisliked = false;
   int likes = 0;
@@ -142,11 +140,6 @@ class _ReviewGeulState extends State<ReviewGeul> {
                           fillColor: Palette.color6,
                           border: InputBorder.none,
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            _comment = value;
-                          });
-                        },
                       ),
                     ),
                     IconButton(

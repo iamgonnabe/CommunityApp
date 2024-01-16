@@ -57,7 +57,7 @@ class _NewMessageState extends State<NewMessage> {
         .doc(user.uid)
         .set({
       'yourId': user.uid,
-      'yourName': widget.yourName,
+      'yourName': user.displayName,
       'message': _userEnterMessage,
       'time': Timestamp.now(),
     });

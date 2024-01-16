@@ -32,6 +32,21 @@ class _NewRecommentState extends State<NewRecomment> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const LoginAlarm()));
     } else {
+      String comment = _comment;
+      _controller.clear();
+      _comment = '';
+      await FirebaseFirestore.instance
+          .collection(widget.board)
+          .doc(widget.docId)
+          .collection('comment')
+          .doc(commentDocId)
+          .collection('recomment')
+          .add({
+        'comment': comment,
+        'time': Timestamp.now(),
+        'userName': user.displayName,
+        'userId': user.uid,
+      }); //대댓글 저장
       final snapshot = await FirebaseFirestore.instance
           .collection(widget.board)
           .doc(widget.docId)
@@ -41,7 +56,7 @@ class _NewRecommentState extends State<NewRecomment> {
       await FirebaseFirestore.instance
           .collection(widget.board)
           .doc(widget.docId)
-          .update({'comments': ++commentsCount});
+          .update({'comments': ++commentsCount}); //댓글 수 업뎃
 
       final snaps = await FirebaseFirestore.instance
           .collection(widget.board)
@@ -56,22 +71,7 @@ class _NewRecommentState extends State<NewRecomment> {
           .doc(widget.docId)
           .collection('comment')
           .doc(commentDocId)
-          .update({'recomment': ++reCommentCount});
-
-      await FirebaseFirestore.instance
-          .collection(widget.board)
-          .doc(widget.docId)
-          .collection('comment')
-          .doc(commentDocId)
-          .collection('recomment')
-          .add({
-        'comment': _comment,
-        'time': Timestamp.now(),
-        'userName': user.displayName,
-        'userId': user.uid,
-      });
-      _controller.clear();
-      _comment = '';
+          .update({'recomment': ++reCommentCount}); //대댓글 수 없뎃
       if (!context.mounted) return;
       Provider.of<ForRecomment>(context, listen: false).update('', false);
       Provider.of<ForRecomment>(context, listen: false).selected(-1);

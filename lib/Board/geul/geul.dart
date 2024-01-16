@@ -51,7 +51,7 @@ class Geul extends StatelessWidget {
                       .toString()
                       .substring(0, 19),
                   docId: docId,
-                  userId: 'IdontCare',
+                  userId: geulDocs[index]['userId'],
                   comments: geulDocs[index]['comments'],
                   likes: geulDocs[index]['likes'],
                 );

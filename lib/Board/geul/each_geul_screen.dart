@@ -39,11 +39,21 @@ class EachGeul extends StatefulWidget {
 
 class _EachGeulState extends State<EachGeul> {
   final user = FirebaseAuth.instance.currentUser;
+  int likes = 0;
   @override
   void initState() {
     super.initState();
     widget.title;
     widget.content;
+    get();
+  }
+
+  void get() async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection(widget.board)
+        .doc(widget.docId)
+        .get();
+    likes = await snapshot.get('likes');
   }
 
   @override
@@ -98,12 +108,20 @@ class _EachGeulState extends State<EachGeul> {
                                   MaterialPageRoute(
                                       builder: (context) => const FreeBoard()),
                                 );
+                                await FirebaseFirestore.instance
+                                    .collection('hotBoard')
+                                    .doc(widget.docId)
+                                    .delete();
                               } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => const HotBoard()),
                                 );
+                                await FirebaseFirestore.instance
+                                    .collection('freeBoard')
+                                    .doc(widget.docId)
+                                    .delete();
                               }
                             },
                             child: const Text(
@@ -141,35 +159,53 @@ class _EachGeulState extends State<EachGeul> {
             offset: const Offset(-10, 52),
             itemBuilder: (context) {
               if (widget.userId == user?.uid) {
-                return [
-                  const PopupMenuItem(
-                    value: 0,
-                    child: Center(
-                      child: Text(
-                        '수정하기',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                if (widget.board == 'freeBoard' && likes < 1) {
+                  return [
+                    const PopupMenuItem(
+                      value: 0,
+                      child: Center(
+                        child: Text(
+                          '수정하기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const PopupMenuDivider(),
-                  const PopupMenuItem(
-                    value: 1,
-                    child: Center(
-                      child: Text(
-                        '삭제하기',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                    const PopupMenuDivider(),
+                    const PopupMenuItem(
+                      value: 1,
+                      child: Center(
+                        child: Text(
+                          '삭제하기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                ];
+                    )
+                  ];
+                } else {
+                  return [
+                    const PopupMenuItem(
+                      value: 1,
+                      child: Center(
+                        child: Text(
+                          '삭제하기',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )
+                  ];
+                }
               } else {
                 return [
                   const PopupMenuItem(
