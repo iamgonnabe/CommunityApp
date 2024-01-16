@@ -48,6 +48,7 @@ A new Flutter project.
   <img src="https://velog.velcdn.com/images/wjdwlsdl321/post/62feb02d-d92b-4bc9-a320-235eb3759a16/image.jpg" height="400" />
   <img src="https://velog.velcdn.com/images/wjdwlsdl321/post/078f3cf2-de0f-4418-a954-a6368403e65a/image.jpg" height="400" />
 </p>
+
 ## 후기 및 개선점
 flutter를 공부한지 3일 후에 바로 프로젝트를 시작하다보니 state 관련해서 어려움을 겪었다.
 개발 후반부에 들어서야 GetX와 Provider를 공부하여 도입하다 보니 state 관리가 매우매우 중요하다는 것을 깨달았다. 또한 Firebase를 다루는 것이 조금 힘들었다. 글을 firestore에 저장하고 또 글에  댓글을 저장하고 그 댓글에 대댓글을 저장하는 과정이 처음부터 설계를 하지 않고 개발하다 보니 생각보다 까다로웠다.
