@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/palette.dart';
+import 'package:flutterproject/controller/controller.dart';
 import 'package:flutterproject/screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutterproject/firebase_options.dart';
@@ -32,7 +33,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           brightness: Brightness.light,
           primaryColor: Palette.color1,
-          fontFamily: 'Georgia',
         ),
         home: const HomeScreen(),
       ),
@@ -46,6 +46,7 @@ class AppUser with ChangeNotifier {
   AppUser({required User? user}) : _user = user;
 
   User? get user => _user;
+  final controller = Get.put(Controller());
 
   void login() {
     _user = FirebaseAuth.instance.currentUser;
@@ -54,6 +55,7 @@ class AppUser with ChangeNotifier {
 
   void logout() {
     FirebaseAuth.instance.signOut();
+    controller.isLike.value == false;
     _user = null;
     notifyListeners();
   }

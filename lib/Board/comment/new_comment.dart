@@ -22,26 +22,29 @@ class _NewCommentState extends State<NewComment> {
   var _comment = '';
   void _saveComment() async {
     FocusScope.of(context).unfocus();
+    String comment = _comment;
+    _controller.clear();
+    _comment = '';
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const LoginAlarm()));
     } else {
-      final snapshot = await FirebaseFirestore.instance
-          .collection(widget.board)
-          .doc(widget.docId)
-          .get();
       await FirebaseFirestore.instance
           .collection(widget.board)
           .doc(widget.docId)
           .collection('comment')
           .add({
-        'comment': _comment,
+        'comment': comment,
         'time': Timestamp.now(),
         'userName': user.displayName,
         'userId': user.uid,
         'recomment': 0,
       });
+      final snapshot = await FirebaseFirestore.instance
+          .collection(widget.board)
+          .doc(widget.docId)
+          .get();
       int commentsCount = await snapshot.get('comments');
       await FirebaseFirestore.instance
           .collection(widget.board)
@@ -53,7 +56,7 @@ class _NewCommentState extends State<NewComment> {
             .doc(widget.docId)
             .collection('comment')
             .add({
-          'comment': _comment,
+          'comment': comment,
           'time': Timestamp.now(),
           'userName': user.displayName,
           'userId': user.uid,
@@ -69,7 +72,7 @@ class _NewCommentState extends State<NewComment> {
             .doc(widget.docId)
             .collection('comment')
             .add({
-          'comment': _comment,
+          'comment': comment,
           'time': Timestamp.now(),
           'userName': user.displayName,
           'userId': user.uid,
@@ -80,8 +83,6 @@ class _NewCommentState extends State<NewComment> {
             .doc(widget.docId)
             .update({'comments': commentsCount});
       }
-      _controller.clear();
-      _comment = '';
     }
   }
 

@@ -1,8 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterproject/Board/geul/geul.dart';
 import 'package:flutterproject/Board/geul/new_or_edit_geul.dart';
-import 'package:flutterproject/widgets/login_widget.dart';
+import 'package:flutterproject/main.dart';
+import 'package:flutterproject/widgets/login_alarm_widget.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class FreeBoard extends StatefulWidget {
   const FreeBoard({super.key});
@@ -35,25 +37,18 @@ class _FreeBoardState extends State<FreeBoard> {
             bottom: 50,
             child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => StreamBuilder(
-                          stream: FirebaseAuth.instance.authStateChanges(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return const NewOrEditGeul(
-                                board: 'freeBoard',
-                                title: "",
-                                content: "",
-                                docId: "",
-                                isEdit: false,
-                              );
-                            }
-                            return const Login();
-                          },
-                        ),
-                      ));
+                  if (Provider.of<AppUser>(context, listen: false).user !=
+                      null) {
+                    Get.to(() => const NewOrEditGeul(
+                          board: 'freeBoard',
+                          title: "",
+                          content: "",
+                          docId: "",
+                          isEdit: false,
+                        ));
+                  } else {
+                    Get.to(() => const LoginAlarm());
+                  }
                 },
                 child: const Text('글쓰기')),
           ),

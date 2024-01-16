@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterproject/controller/controller.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TitleAndContent extends StatefulWidget {
@@ -28,8 +30,8 @@ class TitleAndContent extends StatefulWidget {
 }
 
 class _TitleAndContentState extends State<TitleAndContent> {
+  final controller = Get.put(Controller());
   late SharedPreferences prefs;
-  bool isLiked = false;
   int likes = 0;
   int comments = 0;
   final user = FirebaseAuth.instance.currentUser;
@@ -50,11 +52,12 @@ class _TitleAndContentState extends State<TitleAndContent> {
     prefs = await SharedPreferences.getInstance();
     final likedGeul = prefs.getStringList('likedGeul');
     if (likedGeul != null) {
-      if (likedGeul.contains(widget.userId) &&
-          likedGeul.contains(widget.docId)) {
+      if (likedGeul.contains(user?.uid) && likedGeul.contains(widget.docId)) {
         setState(() {
-          isLiked = true;
+          controller.isLike.value = true;
         });
+      } else {
+        controller.isLike.value = false;
       }
     } else {
       await prefs.setStringList('likedGeul', []);
@@ -69,21 +72,21 @@ class _TitleAndContentState extends State<TitleAndContent> {
   void _onHeartTap() async {
     final likedGeul = prefs.getStringList('likedGeul');
     if (likedGeul != null) {
-      if (isLiked) {
-        likedGeul.remove(widget.userId);
+      if (controller.isLike.value == true) {
+        likedGeul.remove(user!.uid);
         likedGeul.remove(widget.docId);
         setState(() {
           likes--;
         });
       } else {
-        likedGeul.add(widget.userId);
+        likedGeul.add(user!.uid);
         likedGeul.add(widget.docId);
         setState(() {
           likes++;
         });
       }
       setState(() {
-        isLiked = !isLiked;
+        controller.isLike.toggle();
       });
       await prefs.setStringList('likedGeul', likedGeul);
       await FirebaseFirestore.instance
@@ -95,6 +98,10 @@ class _TitleAndContentState extends State<TitleAndContent> {
             .collection('hotBoard')
             .doc(widget.docId)
             .delete();
+        await FirebaseFirestore.instance
+            .collection('freeBoard')
+            .doc(widget.docId)
+            .update({'likes': likes});
       } else if (likes > 0 && widget.board == 'freeBoard') {
         final data = await FirebaseFirestore.instance
             .collection(widget.board)
@@ -109,6 +116,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
           'title': widget.title,
           'content': widget.content,
           'userName': widget.userName,
+          'userId': widget.userId,
           'time': Timestamp.now(),
           'likes': likes,
           'comments': comments,
@@ -151,12 +159,14 @@ class _TitleAndContentState extends State<TitleAndContent> {
             .collection('hotBoard')
             .doc(widget.docId)
             .update({'likes': likes});
-      } else if (widget.board == 'hoBoard') {
+      } else if (widget.board == 'hotBoard') {
         await FirebaseFirestore.instance
             .collection('freeBoard')
             .doc(widget.docId)
             .update({'likes': likes});
       }
+    } else {
+      likes = 0;
     }
   }
 
@@ -205,10 +215,14 @@ class _TitleAndContentState extends State<TitleAndContent> {
               children: [
                 IconButton(
                   onPressed: user == null ? _login : _onHeartTap,
-                  icon: isLiked
-                      ? const Icon(Icons.favorite_rounded)
-                      : const Icon(Icons.favorite_outline_rounded),
-                  color: isLiked ? Colors.red : Colors.black,
+                  icon: user == null
+                      ? const Icon(Icons.favorite_outline)
+                      : (controller.isLike.value
+                          ? const Icon(Icons.favorite_rounded)
+                          : const Icon(Icons.favorite_outline_rounded)),
+                  color: user == null
+                      ? Colors.black
+                      : (controller.isLike.value ? Colors.red : Colors.black),
                 ),
                 Text(likes.toString()),
               ],
