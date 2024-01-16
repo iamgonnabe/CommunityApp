@@ -1,4 +1,4 @@
-# flutterproject <Community App>
+# flutterproject $<Community App$>
 
 A new Flutter project.
 
