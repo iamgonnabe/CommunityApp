@@ -1,6 +1,5 @@
-# flutterproject \<Community App\>
-
-A new Flutter project.
+# flutterproject
+\<Community App\>
 
 ## 📆 개발 기간
 
