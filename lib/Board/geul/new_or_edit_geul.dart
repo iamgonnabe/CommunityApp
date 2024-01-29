@@ -3,14 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NewOrEditGeul extends StatefulWidget {
-  final String board;
   final String title;
   final String content;
   final String docId;
   final bool isEdit;
   const NewOrEditGeul({
     super.key,
-    required this.board,
     required this.content,
     required this.title,
     required this.docId,
@@ -39,7 +37,7 @@ class _NewOrEditGeulState extends State<NewOrEditGeul> {
   void _writeGeul() {
     FocusScope.of(context).unfocus();
     final user = FirebaseAuth.instance.currentUser;
-    FirebaseFirestore.instance.collection(widget.board).add({
+    FirebaseFirestore.instance.collection('freeBoard').add({
       'title': _title,
       'content': _content,
       'userName': user!.displayName,
@@ -55,7 +53,7 @@ class _NewOrEditGeulState extends State<NewOrEditGeul> {
     final time = Timestamp.now();
     FocusScope.of(context).unfocus();
     FirebaseFirestore.instance
-        .collection(widget.board)
+        .collection('freeBoard')
         .doc(widget.docId)
         .update({
       'title': _title,

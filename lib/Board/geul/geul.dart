@@ -10,7 +10,7 @@ class Geul extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
-            .collection(board)
+            .collection('freeBoard')
             .orderBy('time', descending: true)
             .snapshots(),
         builder: (context,
@@ -41,20 +41,24 @@ class Geul extends StatelessWidget {
                   likes: geulDocs[index]['likes'],
                 );
               } else if (board == 'hotBoard') {
-                return GeulPreview(
-                  board: board,
-                  title: geulDocs[index]['title'],
-                  content: geulDocs[index]['content'],
-                  userName: geulDocs[index]['userName'],
-                  time: geulDocs[index]['time']
-                      .toDate()
-                      .toString()
-                      .substring(0, 19),
-                  docId: docId,
-                  userId: geulDocs[index]['userId'],
-                  comments: geulDocs[index]['comments'],
-                  likes: geulDocs[index]['likes'],
-                );
+                if (geulDocs[index]['likes'] > 0) {
+                  return GeulPreview(
+                    board: 'hotBoard',
+                    title: geulDocs[index]['title'],
+                    content: geulDocs[index]['content'],
+                    userName: geulDocs[index]['userName'],
+                    time: geulDocs[index]['time']
+                        .toDate()
+                        .toString()
+                        .substring(0, 19),
+                    docId: docId,
+                    userId: geulDocs[index]['userId'],
+                    comments: geulDocs[index]['comments'],
+                    likes: geulDocs[index]['likes'],
+                  );
+                } else {
+                  return null;
+                }
               }
               return null;
             },

@@ -38,7 +38,7 @@ class BoardsPreview extends StatelessWidget {
       ),
       child: StreamBuilder(
         stream: FirebaseFirestore.instance
-            .collection(board)
+            .collection('freeBoard')
             .orderBy('time', descending: true)
             .snapshots(),
         builder: (context,
@@ -56,191 +56,179 @@ class BoardsPreview extends StatelessWidget {
               itemBuilder: (context, index) {
                 var docId = geulDocs[index].id;
                 if (index < 4) {
-                  if (board == 'freeBoard') {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EachGeul(
-                                    board: board,
-                                    title: geulDocs[index]['title'],
-                                    content: geulDocs[index]['content'],
-                                    userName: geulDocs[index]['userName'],
-                                    time: geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(0, 19),
-                                    docId: docId,
-                                    userId: geulDocs[index]['userId'])));
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            geulDocs[index]['title'],
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black.withOpacity(0.7),
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EachGeul(
+                                  board: board,
+                                  title: geulDocs[index]['title'],
+                                  content: geulDocs[index]['content'],
+                                  userName: geulDocs[index]['userName'],
+                                  time: geulDocs[index]['time']
+                                      .toDate()
+                                      .toString()
+                                      .substring(0, 19),
+                                  docId: docId,
+                                  userId: geulDocs[index]['userId'])));
+                    },
+                    child: board == 'freeBoard'
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              const SizedBox(
+                                height: 5,
+                              ),
                               Text(
-                                geulDocs[index]['time']
-                                            .toDate()
-                                            .toString()
-                                            .substring(0, 9) ==
-                                        DateTime.now()
-                                            .toString()
-                                            .substring(0, 9)
-                                    ? geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(11, 16)
-                                    : geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(5, 10),
+                                geulDocs[index]['title'],
                                 style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
+                                  fontSize: 18,
+                                  color: Colors.black.withOpacity(0.7),
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Icon(
-                                    Icons.favorite_outline,
-                                    size: 18,
-                                    color: Colors.red,
-                                  ),
                                   Text(
-                                    geulDocs[index]['likes'].toString(),
+                                    geulDocs[index]['time']
+                                                .toDate()
+                                                .toString()
+                                                .substring(0, 9) ==
+                                            DateTime.now()
+                                                .toString()
+                                                .substring(0, 9)
+                                        ? geulDocs[index]['time']
+                                            .toDate()
+                                            .toString()
+                                            .substring(11, 16)
+                                        : geulDocs[index]['time']
+                                            .toDate()
+                                            .toString()
+                                            .substring(5, 10),
                                     style: TextStyle(
                                       color: Colors.black.withOpacity(0.5),
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  const Icon(
-                                    Icons.chat_bubble_outline_rounded,
-                                    size: 18,
-                                  ),
-                                  Text(
-                                    geulDocs[index]['comments'].toString(),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.favorite_outline,
+                                        size: 18,
+                                        color: Colors.red,
+                                      ),
+                                      Text(
+                                        geulDocs[index]['likes'].toString(),
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.5),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      const Icon(
+                                        Icons.chat_bubble_outline_rounded,
+                                        size: 18,
+                                      ),
+                                      Text(
+                                        geulDocs[index]['comments'].toString(),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          const Divider(
-                            height: 0.5,
-                            color: Palette.color2,
-                          ),
-                        ],
-                      ),
-                    );
-                  } else if (board == 'hotBoard') {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EachGeul(
-                                    board: board,
-                                    title: geulDocs[index]['title'],
-                                    content: geulDocs[index]['content'],
-                                    userName: geulDocs[index]['userName'],
-                                    time: geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(0, 19),
-                                    docId: docId,
-                                    userId: geulDocs[index]['userId'])));
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            geulDocs[index]['title'],
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black.withOpacity(0.7),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                geulDocs[index]['time']
-                                            .toDate()
-                                            .toString()
-                                            .substring(0, 9) ==
-                                        DateTime.now()
-                                            .toString()
-                                            .substring(0, 9)
-                                    ? geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(11, 16)
-                                    : geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(5, 10),
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                ),
+                              const SizedBox(
+                                height: 5,
                               ),
-                              Row(
+                              const Divider(
+                                height: 0.5,
+                                color: Palette.color2,
+                              ),
+                            ],
+                          )
+                        : (geulDocs[index]['likes'] > 0
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Icon(
-                                    Icons.favorite_outline,
-                                    size: 18,
-                                    color: Colors.red,
+                                  const SizedBox(
+                                    height: 5,
                                   ),
                                   Text(
-                                    geulDocs[index]['likes'].toString(),
+                                    geulDocs[index]['title'],
                                     style: TextStyle(
-                                      color: Colors.black.withOpacity(0.5),
+                                      fontSize: 18,
+                                      color: Colors.black.withOpacity(0.7),
                                     ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        geulDocs[index]['time']
+                                                    .toDate()
+                                                    .toString()
+                                                    .substring(0, 9) ==
+                                                DateTime.now()
+                                                    .toString()
+                                                    .substring(0, 9)
+                                            ? geulDocs[index]['time']
+                                                .toDate()
+                                                .toString()
+                                                .substring(11, 16)
+                                            : geulDocs[index]['time']
+                                                .toDate()
+                                                .toString()
+                                                .substring(5, 10),
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.5),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.favorite_outline,
+                                            size: 18,
+                                            color: Colors.red,
+                                          ),
+                                          Text(
+                                            geulDocs[index]['likes'].toString(),
+                                            style: TextStyle(
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          const Icon(
+                                            Icons.chat_bubble_outline_rounded,
+                                            size: 18,
+                                          ),
+                                          Text(
+                                            geulDocs[index]['comments']
+                                                .toString(),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                   const SizedBox(
-                                    width: 5,
+                                    height: 5,
                                   ),
-                                  const Icon(
-                                    Icons.chat_bubble_outline_rounded,
-                                    size: 18,
-                                  ),
-                                  Text(
-                                    geulDocs[index]['comments'].toString(),
+                                  const Divider(
+                                    height: 0.5,
+                                    color: Palette.color2,
                                   ),
                                 ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          const Divider(
-                            height: 0.5,
-                            color: Palette.color2,
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+                              )
+                            : Container()),
+                  );
                 }
                 return null;
               });

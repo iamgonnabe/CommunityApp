@@ -42,11 +42,11 @@ class MyApp extends StatelessWidget {
 
 class AppUser with ChangeNotifier {
   User? _user;
+  final controller = Get.put(Controller());
 
   AppUser({required User? user}) : _user = user;
 
   User? get user => _user;
-  final controller = Get.put(Controller());
 
   void login() {
     _user = FirebaseAuth.instance.currentUser;

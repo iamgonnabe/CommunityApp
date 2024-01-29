@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TitleAndContent extends StatefulWidget {
-  final String board;
   final String docId;
   final String title;
   final String content;
@@ -16,7 +15,6 @@ class TitleAndContent extends StatefulWidget {
   final String userId;
   const TitleAndContent({
     super.key,
-    required this.board,
     required this.docId,
     required this.title,
     required this.content,
@@ -43,7 +41,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
 
   Future _loadLikeStatus() async {
     final snapshot = await FirebaseFirestore.instance
-        .collection(widget.board)
+        .collection('freeBoard')
         .doc(widget.docId)
         .get();
     setState(() {
@@ -53,11 +51,7 @@ class _TitleAndContentState extends State<TitleAndContent> {
     final likedGeul = prefs.getStringList('likedGeul');
     if (likedGeul != null) {
       if (likedGeul.contains(user?.uid) && likedGeul.contains(widget.docId)) {
-        setState(() {
-          controller.isLike.value = true;
-        });
-      } else {
-        controller.isLike.value = false;
+        controller.isLike.value = true;
       }
     } else {
       await prefs.setStringList('likedGeul', []);
@@ -90,83 +84,9 @@ class _TitleAndContentState extends State<TitleAndContent> {
       });
       await prefs.setStringList('likedGeul', likedGeul);
       await FirebaseFirestore.instance
-          .collection(widget.board)
+          .collection('freeBoard')
           .doc(widget.docId)
           .update({'likes': likes});
-      if (likes == 0) {
-        await FirebaseFirestore.instance
-            .collection('hotBoard')
-            .doc(widget.docId)
-            .delete();
-        await FirebaseFirestore.instance
-            .collection('freeBoard')
-            .doc(widget.docId)
-            .update({'likes': likes});
-      } else if (likes > 0 && widget.board == 'freeBoard') {
-        final data = await FirebaseFirestore.instance
-            .collection(widget.board)
-            .doc(widget.docId)
-            .get();
-        comments = data.get('comments');
-
-        await FirebaseFirestore.instance
-            .collection('hotBoard')
-            .doc(widget.docId)
-            .set({
-          'title': widget.title,
-          'content': widget.content,
-          'userName': widget.userName,
-          'userId': widget.userId,
-          'time': Timestamp.now(),
-          'likes': likes,
-          'comments': comments,
-        });
-        final snapshot = await FirebaseFirestore.instance
-            .collection('freeBoard')
-            .doc(widget.docId)
-            .collection('comment')
-            .get();
-        for (var doc in snapshot.docs) {
-          Map<String, dynamic> dataToCopy = doc.data();
-          var commentId = doc.id;
-          await FirebaseFirestore.instance
-              .collection('hotBoard')
-              .doc(widget.docId)
-              .collection('comment')
-              .doc(commentId)
-              .set(dataToCopy);
-          final snapshot1 = await FirebaseFirestore.instance
-              .collection('freeBoard')
-              .doc(widget.docId)
-              .collection('comment')
-              .doc(commentId)
-              .collection('recomment')
-              .get();
-          if (snapshot1.docs.isNotEmpty) {
-            for (var doc1 in snapshot1.docs) {
-              Map<String, dynamic> dataToCopy1 = doc1.data();
-              await FirebaseFirestore.instance
-                  .collection('hotBoard')
-                  .doc(widget.docId)
-                  .collection('comment')
-                  .doc(commentId)
-                  .collection('recomment')
-                  .add(dataToCopy1);
-            }
-          }
-        }
-        await FirebaseFirestore.instance
-            .collection('hotBoard')
-            .doc(widget.docId)
-            .update({'likes': likes});
-      } else if (widget.board == 'hotBoard') {
-        await FirebaseFirestore.instance
-            .collection('freeBoard')
-            .doc(widget.docId)
-            .update({'likes': likes});
-      }
-    } else {
-      likes = 0;
     }
   }
 

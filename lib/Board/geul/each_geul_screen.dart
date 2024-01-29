@@ -10,7 +10,7 @@ import 'package:flutterproject/Board/palette.dart';
 import 'package:flutterproject/main.dart';
 import 'package:flutterproject/screens/chatting_screen.dart';
 import 'package:flutterproject/screens/free_board_screen.dart';
-import 'package:flutterproject/widgets/hot_board_widget.dart';
+import 'package:flutterproject/screens/hot_board_screen.dart';
 import 'package:flutterproject/widgets/login_alarm_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -50,7 +50,7 @@ class _EachGeulState extends State<EachGeul> {
 
   void get() async {
     final snapshot = await FirebaseFirestore.instance
-        .collection(widget.board)
+        .collection('freeBoard')
         .doc(widget.docId)
         .get();
     likes = await snapshot.get('likes');
@@ -80,7 +80,6 @@ class _EachGeulState extends State<EachGeul> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => NewOrEditGeul(
-                          board: widget.board,
                           content: widget.content,
                           title: widget.title,
                           docId: widget.docId,
@@ -98,7 +97,7 @@ class _EachGeulState extends State<EachGeul> {
                           ElevatedButton(
                             onPressed: () async {
                               await FirebaseFirestore.instance
-                                  .collection(widget.board)
+                                  .collection('freeBoard')
                                   .doc(widget.docId)
                                   .delete();
                               if (!context.mounted) return;
@@ -108,20 +107,12 @@ class _EachGeulState extends State<EachGeul> {
                                   MaterialPageRoute(
                                       builder: (context) => const FreeBoard()),
                                 );
-                                await FirebaseFirestore.instance
-                                    .collection('hotBoard')
-                                    .doc(widget.docId)
-                                    .delete();
                               } else {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => const HotBoard()),
                                 );
-                                await FirebaseFirestore.instance
-                                    .collection('freeBoard')
-                                    .doc(widget.docId)
-                                    .delete();
                               }
                             },
                             child: const Text(
@@ -159,7 +150,7 @@ class _EachGeulState extends State<EachGeul> {
             offset: const Offset(-10, 52),
             itemBuilder: (context) {
               if (widget.userId == user?.uid) {
-                if (widget.board == 'freeBoard' && likes < 1) {
+                if (likes < 1) {
                   return [
                     const PopupMenuItem(
                       value: 0,
@@ -237,7 +228,6 @@ class _EachGeulState extends State<EachGeul> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TitleAndContent(
-                board: widget.board,
                 docId: widget.docId,
                 title: widget.title,
                 content: widget.content,
@@ -246,7 +236,7 @@ class _EachGeulState extends State<EachGeul> {
                 userId: widget.userId,
               ),
               Comments(
-                board: widget.board,
+                board: 'freeBoard',
                 docId: widget.docId,
                 title: widget.title,
                 content: widget.content,
@@ -254,9 +244,9 @@ class _EachGeulState extends State<EachGeul> {
                 userName: widget.userName,
               ),
               Provider.of<ForRecomment>(context).isRecomment
-                  ? NewRecomment(board: widget.board, docId: widget.docId)
+                  ? NewRecomment(board: 'freeBoard', docId: widget.docId)
                   : NewComment(
-                      board: widget.board,
+                      board: 'freeBoard',
                       docId: widget.docId,
                     ),
             ],

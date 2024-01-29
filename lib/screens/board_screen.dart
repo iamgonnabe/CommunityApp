@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterproject/screens/free_board_screen.dart';
-import 'package:flutterproject/widgets/hot_board_widget.dart';
+import 'package:flutterproject/screens/hot_board_screen.dart';
 import 'package:flutterproject/screens/review_board.screen.dart';
 
 class BoardList extends StatelessWidget {
