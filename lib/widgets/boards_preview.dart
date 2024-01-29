@@ -140,76 +140,8 @@ class BoardsPreview extends StatelessWidget {
                                   ),
                                 ],
                               ),
-<<<<<<< HEAD
                               const SizedBox(
                                 height: 5,
-=======
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          const Divider(
-                            height: 0.5,
-                            color: Palette.color2,
-                          ),
-                        ],
-                      ),
-                    );
-                  } else if (board == 'hotBoard') {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EachGeul(
-                                    board: board,
-                                    title: geulDocs[index]['title'],
-                                    content: geulDocs[index]['content'],
-                                    userName: geulDocs[index]['userName'],
-                                    time: geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(0, 19),
-                                    docId: docId,
-                                    userId: geulDocs[index]['userId'])));
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            geulDocs[index]['title'],
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.black.withOpacity(0.7),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                geulDocs[index]['time']
-                                            .toDate()
-                                            .toString()
-                                            .substring(0, 9) ==
-                                        DateTime.now()
-                                            .toString()
-                                            .substring(0, 9)
-                                    ? geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(11, 16)
-                                    : geulDocs[index]['time']
-                                        .toDate()
-                                        .toString()
-                                        .substring(5, 10),
-                                style: TextStyle(
-                                  color: Colors.black.withOpacity(0.5),
-                                ),
->>>>>>> origin/main
                               ),
                               const Divider(
                                 height: 0.5,

@@ -47,8 +47,6 @@ class AppUser with ChangeNotifier {
   AppUser({required User? user}) : _user = user;
 
   User? get user => _user;
-  final controller = Get.put(Controller());
-
   void login() {
     _user = FirebaseAuth.instance.currentUser;
     notifyListeners();
