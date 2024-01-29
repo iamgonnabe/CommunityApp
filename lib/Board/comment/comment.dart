@@ -91,6 +91,51 @@ class _CommentsState extends State<Comments> {
                 .collection('recomment')
                 .doc(recommentDocId)
                 .delete();
+            final snaps = await FirebaseFirestore.instance
+                .collection(widget.board)
+                .doc(widget.docId)
+                .collection('comment')
+                .doc(commentDocId)
+                .get();
+            int reCommentCount = await snaps.get('recomment');
+            await FirebaseFirestore.instance
+                .collection(widget.board)
+                .doc(widget.docId)
+                .collection('comment')
+                .doc(commentDocId)
+                .update({'recomment': --reCommentCount});
+            if (widget.board == 'hotBoard') {
+              await FirebaseFirestore.instance
+                  .collection('freeBoard')
+                  .doc(widget.docId)
+                  .collection('comment')
+                  .doc(commentDocId)
+                  .collection('recomment')
+                  .doc(recommentDocId)
+                  .delete();
+              await FirebaseFirestore.instance
+                  .collection('freeBoard')
+                  .doc(widget.docId)
+                  .collection('comment')
+                  .doc(commentDocId)
+                  .update({'recomment': reCommentCount});
+            } else if (widget.board == 'freeBoard' &&
+                snapshot.get('likes') > 0) {
+              await FirebaseFirestore.instance
+                  .collection('hotBoard')
+                  .doc(widget.docId)
+                  .collection('comment')
+                  .doc(commentDocId)
+                  .collection('recomment')
+                  .doc(recommentDocId)
+                  .delete();
+              await FirebaseFirestore.instance
+                  .collection('hotBoard')
+                  .doc(widget.docId)
+                  .collection('comment')
+                  .doc(commentDocId)
+                  .update({'recomment': reCommentCount});
+            }
           } else {
             await FirebaseFirestore.instance
                 .collection(widget.board)
@@ -98,6 +143,22 @@ class _CommentsState extends State<Comments> {
                 .collection('comment')
                 .doc(commentDocId)
                 .delete();
+            if (widget.board == 'hotBoard') {
+              await FirebaseFirestore.instance
+                  .collection('freeBoard')
+                  .doc(widget.docId)
+                  .collection('comment')
+                  .doc(commentDocId)
+                  .delete();
+            } else if (widget.board == 'freeBoard' &&
+                snapshot.get('likes') > 0) {
+              await FirebaseFirestore.instance
+                  .collection('hotBoard')
+                  .doc(widget.docId)
+                  .collection('comment')
+                  .doc(commentDocId)
+                  .delete();
+            }
           }
         } else if (value == 2) {
           Navigator.push(

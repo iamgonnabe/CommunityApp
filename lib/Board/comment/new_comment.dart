@@ -50,6 +50,42 @@ class _NewCommentState extends State<NewComment> {
           .collection(widget.board)
           .doc(widget.docId)
           .update({'comments': ++commentsCount});
+<<<<<<< HEAD
+=======
+      if (widget.board == 'hotBoard') {
+        await FirebaseFirestore.instance
+            .collection('freeBoard')
+            .doc(widget.docId)
+            .collection('comment')
+            .add({
+          'comment': comment,
+          'time': Timestamp.now(),
+          'userName': user.displayName,
+          'userId': user.uid,
+          'recomment': 0,
+        });
+        await FirebaseFirestore.instance
+            .collection('freeBoard')
+            .doc(widget.docId)
+            .update({'comments': commentsCount});
+      } else if (widget.board == 'freeBoard' && snapshot.get('likes') > 0) {
+        await FirebaseFirestore.instance
+            .collection('hotBoard')
+            .doc(widget.docId)
+            .collection('comment')
+            .add({
+          'comment': comment,
+          'time': Timestamp.now(),
+          'userName': user.displayName,
+          'userId': user.uid,
+          'recomment': 0,
+        });
+        await FirebaseFirestore.instance
+            .collection('hotBoard')
+            .doc(widget.docId)
+            .update({'comments': commentsCount});
+      }
+>>>>>>> origin/main
     }
   }
 

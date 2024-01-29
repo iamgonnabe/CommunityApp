@@ -40,6 +40,10 @@ class _FreeBoardState extends State<FreeBoard> {
                   if (Provider.of<AppUser>(context, listen: false).user !=
                       null) {
                     Get.to(() => const NewOrEditGeul(
+<<<<<<< HEAD
+=======
+                          board: 'freeBoard',
+>>>>>>> origin/main
                           title: "",
                           content: "",
                           docId: "",
